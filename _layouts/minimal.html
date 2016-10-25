@@ -7,10 +7,14 @@ layout: compress
     {% include head.html %}
     <body>
         {% include svg-icons.html %}
-        {% include header-default.html %}
-            <section class="content">
+        {% include header-post.html %}
+        <section class="post">
+
+            <article id="post" class="post-content" role="main" itemprop="mainContentOfPage">
                 {{ content }}
-            </section>
-        {% include footer.html %}
+            </article>
+
+            {% include footer.html %}
+        </section>
     </body>
 </html>
