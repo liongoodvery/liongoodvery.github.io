@@ -88,7 +88,7 @@ int main(){
 }
 ```
 
--result
+- result
 
 ```
 ret=2
@@ -151,7 +151,7 @@ int main() {
 }
 ```
 
-result
+- result
 
 ```
 first calling set_jmp
@@ -252,7 +252,7 @@ int main(){
 }
 ```
 
-result
+- result
 ```
 first sleep
 ^\^\^\^\^\^\^\^\^\^\^\^\^\^\^\^\^\^\^\^\^\^\^\^\^\
