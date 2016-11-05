@@ -183,3 +183,73 @@ struct task_struct {
 
 ##  Process Creation: `fork()`, `vfork()`, and `clone()` System Calls
 ![Process Creation System Calls](../assets/img/ProcessCreationSystemCalls.jpg)
+```c
+/*
+ *  Ok, this is the main fork-routine.
+ *
+ * It copies the process, and if successful kick-starts
+ * it and waits for it to finish using the VM if required.
+ */
+long do_fork(unsigned long clone_flags,
+	      unsigned long stack_start,
+	      struct pt_regs *regs,
+	      unsigned long stack_size,
+	      int __user *parent_tidptr,
+	      int __user *child_tidptr)
+{
+	struct task_struct *p;
+	int trace = 0;
+	long pid = alloc_pidmap();
+
+	if (pid < 0)
+		return -EAGAIN;
+	if (unlikely(current->ptrace)) {
+		trace = fork_traceflag (clone_flags);
+		if (trace)
+			clone_flags |= CLONE_PTRACE;
+	}
+
+	p = copy_process(clone_flags, stack_start, regs, stack_size, parent_tidptr, child_tidptr, pid);
+	/*
+	 * Do this prior waking up the new thread - the thread pointer
+	 * might get invalid after that point, if the thread exits quickly.
+	 */
+	if (!IS_ERR(p)) {
+		struct completion vfork;
+
+		if (clone_flags & CLONE_VFORK) {
+			p->vfork_done = &vfork;
+			init_completion(&vfork);
+		}
+
+		if ((p->ptrace & PT_PTRACED) || (clone_flags & CLONE_STOPPED)) {
+			/*
+			 * We'll start up with an immediate SIGSTOP.
+			 */
+			sigaddset(&p->pending.signal, SIGSTOP);
+			set_tsk_thread_flag(p, TIF_SIGPENDING);
+		}
+
+		if (!(clone_flags & CLONE_STOPPED))
+			wake_up_new_task(p, clone_flags);
+		else
+			p->state = TASK_STOPPED;
+
+		if (unlikely (trace)) {
+			current->ptrace_message = pid;
+			ptrace_notify ((trace << 8) | SIGTRAP);
+		}
+
+		if (clone_flags & CLONE_VFORK) {
+			wait_for_completion(&vfork);
+			if (unlikely (current->ptrace & PT_TRACE_VFORK_DONE))
+				ptrace_notify ((PTRACE_EVENT_VFORK_DONE << 8) | SIGTRAP);
+		}
+	} else {
+		free_pidmap(pid);
+		pid = PTR_ERR(p);
+	}
+	return pid;
+}
+
+```

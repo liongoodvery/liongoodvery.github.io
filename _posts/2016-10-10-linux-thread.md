@@ -40,7 +40,7 @@ pthread_t pthread_self(void);
 
 int pthread_create(pthread_t *restrict tidp,
                    const pthread_attr_t *restrict attr,
-                   void *(*start_rtn)(void), 
+                   void *(*start_rtn)(void),
                    void *restrict arg);
 ```
 
@@ -82,7 +82,7 @@ int main() {
 }
 ```
 
-- result 
+- result
 ```
 main thread pid 26921 tid 22664960 (0x159d700)
 new thread pid 26921 tid 14526208 (0xdda700)
@@ -95,7 +95,7 @@ new thread pid 26921 tid 14526208 (0xdda700)
 > The thread can simply return from the start routine. The return value is the thread's exit code.
 > The thread can be canceled by another thread in the same process.
 > The thread can call `pthread_exit`.
-    
+
 ```c
 #include <pthread.h>
 
@@ -204,7 +204,7 @@ thread 1:
   foo.c = 3
   foo.d = 4
 thread 2: ID is 2134189824
-parent 
+parent
   structure at 0x7f351f40
   foo.a = 0
   foo.b = 0
@@ -213,7 +213,7 @@ parent
 ```
 
 
-- heap 
+- heap
 
 ```c
 #include <pthread.h>
@@ -272,7 +272,7 @@ thread 1:
   foo.c = 3
   foo.d = 4
 thread 2: ID is 250177280
-parent 
+parent
   structure at 0x80008c0
   foo.a = 1
   foo.b = 2
@@ -472,7 +472,7 @@ a=10000
 ```
 
 ### ReaderWriter Locks
-    
+
 ```c
 #include <pthread.h>
 
@@ -519,3 +519,115 @@ int pthread_cond_timedwait(pthread_cond_t *restrict cond,
                            const struct timespec *restrict timeout);
 ```
 
+## Thread Control
+
+
+### Thread Limits
+
+```c
+/*************************************************************************
+	> File Name: thread_limits.c
+	> Author: Lion
+	> Mail: lion.good.very.first@gmail.com
+	> Created Time: Sat 05 Nov 2016 02:29:02 PM CST
+ ************************************************************************/
+
+#include<stdio.h>
+#include <unistd.h>
+#include <limits.h>
+
+int main() {
+#ifdef _SC_THREAD_DESTRUCTOR_ITERATIONS
+    printf("PTHREAD_DESTRUCTOR_ITERATIONS=%d\n", sysconf(_SC_THREAD_DESTRUCTOR_ITERATIONS));
+#endif
+
+#ifdef _SC_THREAD_KEYS_MAX
+    printf("PTHREAD_KEYS_MAX=0x%X\n", sysconf(_SC_THREAD_KEYS_MAX));
+#endif
+
+#ifdef _SC_THREAD_STACK_MIN
+    printf("PTHREAD_STACK_MIN=0x%X\n", sysconf(_SC_THREAD_STACK_MIN));
+#endif
+
+#ifdef _SC_THREAD_THREADS_MAX
+    printf("PTHREAD_THREADS_MAX=0x%X\n", sysconf(_SC_THREAD_THREADS_MAX));
+#endif
+    return 0;
+}
+```
+
+
+- Results
+
+```
+PTHREAD_DESTRUCTOR_ITERATIONS=4
+PTHREAD_KEYS_MAX=0x400
+PTHREAD_STACK_MIN=0x4000
+PTHREAD_THREADS_MAX=0xFFFFFFFF
+```
+
+
+###  Thread Attributes
+
+```c
+#include <pthread.h>
+
+int pthread_attr_init(pthread_attr_t *attr);
+
+int pthread_attr_destroy(pthread_attr_t   *attr);
+```
+- Table of Thread Attributes
+| Name | Description    |
+| :------------- | :------------- |
+| detachstate      | detached thread attribute       |
+| guardsize      | guard buffer size in bytes at end of thread stack       |
+| stackaddr      | lowest address of thread stack       |
+| stacksize      | size in bytes of thread stack       |
+
+#### detachstate attribute
+
+```c
+#include <pthread.h>
+int pthread_attr_getdetachstate(const pthread_attr_t *restrict attr,
+                                int *detachstate);
+int pthread_attr_setdetachstate(pthread_attr_t *attr, int detachstate);
+```
+
+- Return : 0 if OK, error number on failure
+
+```c
+#include<stdio.h>
+#include <pthread.h>
+
+void *thr_fn(void *args) {
+
+}
+
+int main() {
+    int err;
+    pthread_t p;
+    pthread_attr_t attr;
+
+    err = pthread_attr_init(&attr);
+    if (err != 0)
+        return err;
+    err = pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+    if (0 == err)
+        pthread_create(&p, &attr, thr_fn, NULL);
+    pthread_attr_destroy(&attr);
+    return 0;
+}
+```
+
+#### thread stack attribute
+
+```c
+#include <pthread.h>
+
+int pthread_attr_getstack(const pthread_attr_t *restrict attr,
+                          void **restrict stackaddr,
+                          size_t *restrict stacksize);
+
+int pthread_attr_setstack(const pthread_attr_t *attr,
+                          void *stackaddr, size_t *stacksize);
+```
