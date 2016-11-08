@@ -628,6 +628,145 @@ int pthread_attr_getstack(const pthread_attr_t *restrict attr,
                           void **restrict stackaddr,
                           size_t *restrict stacksize);
 
+int pthread_attr_setstack(const p
+
+```c
+#include <pthread.h>
+
+int pthread_attr_getstack(const pthread_attr_t *restrict attr,
+                          void **restrict stackaddr,
+                          size_t *restrict stacksize);
+
 int pthread_attr_setstack(const pthread_attr_t *attr,
                           void *stackaddr, size_t *stacksize);
 ```
+```c
+#include<stdio.h>
+#include <pthread.h>
+#include <unistd.h>
+#include <stdlib.h>
+
+long fibonacci(int fibo) {
+    if (fibo == 0 || fibo == 1)
+        return 1;
+    else
+        return fibonacci(fibo - 1) + fibonacci(fibo - 2);
+}
+
+void *thr_fn(void *args) {
+    int a = 0;
+    int b = 1;
+    long arr[1<<16] ;//alloc more than 64k on stack
+    printf("ret = %d\n", fibonacci(20));
+    return (void *) 0;
+}
+
+int main() {
+    pthread_attr_t attr;
+    int err;
+    void *addr;
+    size_t size;
+    pthread_t p;
+    if (err = pthread_attr_init(&attr)) {
+        return err;
+    }
+
+    pthread_attr_getstacksize(&attr, &size);
+    printf("size=0x%x\n", size);
+
+
+    pthread_attr_setstacksize(&attr, 1024*64);//64k
+
+    pthread_attr_getstacksize(&attr, &size);
+    printf("size=0x%x\n", size);
+
+    if (err = pthread_create(&p, &attr, thr_fn, NULL)) {
+        return err;
+    }
+
+    sleep(3);
+
+    pthread_attr_getstacksize(&attr, &size);
+    printf("size=0x%x\n"l 11
+```
+
+```c, size);
+
+    pthread_attr_getstack(&attr,&addr,&size);
+    printf("size=0x%x\n", size);
+
+    pthread_join(p, NULL);
+    return 0;
+}
+```
+
+- Results
+
+```
+size=0x800000
+size=0x10000
+Command terminated by signal 11
+```
+
+```c
+#define	SIGSEGV		11	/* Segmentation violation (ANSI).  */
+```
+
+```c
+#include <pthread.h>
+
+int pthread_attr_getguardsize(const pthread_attr_t *restrict attr,
+                                size_t *restrict guardsize);
+
+int pthread_attr_setguardsize(pthread_attr_t *attr, size_t guardsize);
+```
+
+> The guardsize thread attribute controls the size of the memory extent after the end of the thread's stack to protect against stack overflow.
+
+#### Mutex Attributes
+
+```c
+#include <pthread.h>
+int pthread_mutexattr_init(pthread_mutexattr_t *attr);
+
+int pthread_mutexattr_destroy(pthread_mutexattr_t *attr);
+```
+- Both return: 0 if OK, error number on failure
+
+```c
+#include <pthread.h>
+
+int pthread_mutexattr_getpshared(const pthread_mutexattr_t* restrict attr,
+                                 int *restrict pshared);
+
+int pthread_mutexattr_setpshared(pthread_mutexattr_t *attr,
+                                 int pshared);
+```
+
+- Both return: 0 if OK, error number on failure
+
+- `process-shared` attribute check `_POSIX_THREAD_PROCESS_SHARED`
+- `PTHREAD_PROCESS_PRIVATE` is the default behavior.Within a process, multiple threads can access the same synchronization object
+- `PTHREAD_PROCESS_SHARED` shared between multiple processes may be used for synchronization by those processes
+
+- The `type` attribute
+
+| Mutex type              | Relock without unlock?|Unlock when not owned? |Unlock when unlocked?  |
+| :-------------          | :-------------        |:-------------         |:-------------         |
+| PTHREAD_MUTEX_NORMAL    | deadlock              |undefined              |undefined              |
+| PTHREAD_MUTEX_ERRORCHECK|returns error          |returns error          |returns error          |
+| PTHREAD_MUTEX_RECURSIVE |allowed                |returns error          |returns error          |
+| PTHREAD_MUTEX_DEFAULT   |undefined              |undefined              |undefined              |
+
+
+```c
+#include <pthread.h>
+
+int pthread_mutexattr_gettype(const pthread_mutexattr_t *
+                              restrict attr,
+                               int *restrict type);
+
+int pthread_mutexattr_settype(pthread_mutexattr_t *attr, int type);
+```
+
+- Both return: 0 if OK, error number on failure
