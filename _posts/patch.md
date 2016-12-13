@@ -275,7 +275,157 @@ Has been modified?: true
 ```
 
 
+## Framework Services for AOP
 
+### Configuring AOP Declaratively
+- UsingProxyFactoryBean
+- Using the Spring aop namespace:
+- Using @AspectJ-style annotations
+
+###　Using　ProxyFactoryBean
+
+
+
+```java
+//filename: MyDependency.java
+public class MyDependency {
+    public void foo() {
+        System.out.println("foo()");
+    }
+
+    public void bar() {
+        System.out.println("bar()");
+    }
+}
+```
+
+
+```java
+//filename: MyBean.java
+public class MyBean {
+    private MyDependency dep;
+    public void execute() {
+        dep.foo();
+        dep.bar();
+    }
+
+    public void setDep(MyDependency dep) {
+        this.dep = dep;
+    }
+}
+```
+
+
+```java
+//filename: ProxyFactoryBeanExample.java
+import org.springframework.context.support.GenericXmlApplicationContext;
+public class ProxyFactoryBeanExample {
+    public static void main(String[] args) {
+        GenericXmlApplicationContext ctx = new GenericXmlApplicationContext();
+        ctx.load("classpath:META-INF/spring/app-context-xml.xml");
+        ctx.refresh();
+
+        MyBean bean1 = (MyBean)ctx.getBean("myBean1");
+        MyBean bean2 = (MyBean)ctx.getBean("myBean2");
+
+        System.out.println("Bean 1");
+        bean1.execute();
+
+        System.out.println("\nBean 2");
+        bean2.execute();
+    }
+}
+```
+
+
+
+```java
+//filename: MyAdvice.java
+import org.springframework.aop.MethodBeforeAdvice;
+import java.lang.reflect.Method;
+public class MyAdvice implements MethodBeforeAdvice {
+    @Override
+    public void before(Method method, Object[] args, Object target)
+            throws Throwable {
+        System.out.println("Executing: " + method);
+    }
+}
+```
+
+
+```xml
+<!--filename:app-context-xml.xml-->
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="myBean1" class="com.apress.prospring4.ch5.MyBean">
+        <property name="dep">
+            <ref bean="myDependency1"/>
+        </property>
+    </bean>
+
+    <bean id="myBean2" class="com.apress.prospring4.ch5.MyBean">
+        <property name="dep">
+            <ref bean="myDependency2"/>
+        </property>
+    </bean>
+
+    <bean id="myDependencyTarget" class="com.apress.prospring4.ch5.MyDependency"/>
+
+    <bean id="myDependency1" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target">
+            <ref bean="myDependencyTarget"/>
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <value>advice</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="myDependency2" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target">
+            <ref bean="myDependencyTarget"/>
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <value>advisor</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="advice" class="com.apress.prospring4.ch5.MyAdvice"/>
+
+    <bean id="advisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+        <property name="advice">
+            <ref bean="advice"/>
+        </property>
+        <property name="pointcut">
+            <bean class="org.springframework.aop.aspectj.AspectJExpressionPointcut">
+                <property name="expression">
+                    <value>execution(* foo*(..))</value>
+                </property>
+            </bean>
+        </property>
+    </bean>
+</beans>
+```
+
+```out
+Bean 1
+Executing: public void com.apress.prospring4.ch5.MyDependency.foo()
+foo()
+Executing: public void com.apress.prospring4.ch5.MyDependency.bar()
+bar()
+
+Bean 2
+Executing: public void com.apress.prospring4.ch5.MyDependency.foo()
+foo()
+bar()
+```
 
 
 
