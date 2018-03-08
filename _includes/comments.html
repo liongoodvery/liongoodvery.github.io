@@ -1,16 +1,15 @@
-<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="{{page.url}}" data-title="{{ page.title }}" data-url="{{ site.baseurl }}{{page.url}}"></div>
-<!-- 多说评论框 end -->
-<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
-<script type="text/javascript">
-var duoshuoQuery = {short_name:"liongood"};
-	(function() {
-		var ds = document.createElement('script');
-		ds.type = 'text/javascript';ds.async = true;
-		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-		ds.charset = 'UTF-8';
-		(document.getElementsByTagName('head')[0] 
-		 || document.getElementsByTagName('body')[0]).appendChild(ds);
-	})();
-	</script>
-<!-- 多说公共JS代码 end -->
+<div id="comment_container"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+var gitment = new Gitment({
+  id: 'location.href', // 可选。默认为 location.href
+  owner: 'liongoodvery',
+  repo: 'liongoodvery.github.io',
+  oauth: {
+    client_id: '3d3f55c830c952042110',
+    client_secret: '6e8bed05ceadfcd88465654cfe1d89ca6cf66a12',
+  },
+})
+gitment.render('comment_container')
+</script>
