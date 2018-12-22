@@ -41,4 +41,4 @@ links:
 # exclude my node related stuff
 exclude: ['package.json', 'src', 'node_modules']
 
-theme: jekyll-theme-merlot
+theme: jekyll-theme-midnight
