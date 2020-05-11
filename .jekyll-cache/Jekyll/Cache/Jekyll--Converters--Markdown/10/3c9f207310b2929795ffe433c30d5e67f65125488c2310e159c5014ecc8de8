@@ -1,0 +1,196 @@
+I"�O<h3 id="arraylist-内部用什么实现的">ArrayList 内部用什么实现的？</h3>
+
+<h4 id="一构造函数">一、构造函数</h4>
+
+<ul>
+  <li>空参构造</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java">     <span class="cm">/**
+     * Constructs a new {@code ArrayList} instance with zero initial capacity.
+     */</span>
+     <span class="kd">public</span> <span class="nf">ArrayList</span><span class="o">()</span> <span class="o">{</span>
+     <span class="n">array</span> <span class="o">=</span> <span class="nc">EmptyArray</span><span class="o">.</span><span class="na">OBJECT</span><span class="o">;</span>
+     <span class="o">}</span>
+   </code></pre></figure>
+
+<ul>
+  <li>array 是一个 Object[]类型。当我们 new 一个空参构造时系统调用了 EmptyArray.OBJECT 属性，EmptyArray仅仅是一个系统的类库，该类源码如下：</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java">     <span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">EmptyArray</span> <span class="o">{</span>
+          <span class="kd">private</span> <span class="nf">EmptyArray</span><span class="o">()</span> <span class="o">{}</span>
+          <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">boolean</span><span class="o">[]</span> <span class="no">BOOLEAN</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">boolean</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span>
+          <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">byte</span><span class="o">[]</span> <span class="no">BYTE</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span>
+          <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">char</span><span class="o">[]</span> <span class="no">CHAR</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">char</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span>
+          <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">double</span><span class="o">[]</span> <span class="no">DOUBLE</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">double</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span>
+          <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span><span class="o">[]</span> <span class="no">INT</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span>
+          <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">Class</span><span class="o">&lt;?&gt;[]</span> <span class="no">CLASS</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Class</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span>
+          <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">Object</span><span class="o">[]</span> <span class="no">OBJECT</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Object</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span>
+          <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">String</span><span class="o">[]</span> <span class="no">STRING</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">String</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span>
+          <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">Throwable</span><span class="o">[]</span> <span class="no">THROWABLE</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Throwable</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span>
+          <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">StackTraceElement</span><span class="o">[]</span> <span class="no">STACK_TRACE_ELEMENT</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StackTraceElement</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span>
+     <span class="o">}</span>
+    </code></pre></figure>
+
+<p>也就是说当我们 new 一个空参 ArrayList 的时候，系统内部使用了一个 new Object[0]数组。</p>
+
+<ul>
+  <li>带参构造 1</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java">    <span class="cm">/**
+    * Constructs a new instance of {@code ArrayList} with the specified
+    * initial capacity.
+    **
+    @param capacity
+    * the initial capacity of this {@code ArrayList}.
+    */</span>
+    <span class="kd">public</span> <span class="nf">ArrayList</span><span class="o">(</span><span class="kt">int</span> <span class="n">capacity</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">capacity</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nf">IllegalArgumentException</span><span class="o">(</span><span class="s">"capacity &lt; 0: "</span> <span class="o">+</span> <span class="n">capacity</span><span class="o">);</span>
+    <span class="o">}</span> 
+    <span class="n">array</span> <span class="o">=</span> <span class="o">(</span><span class="n">capacity</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="nc">EmptyArray</span><span class="o">.</span><span class="na">OBJECT</span> <span class="o">:</span> <span class="k">new</span> <span class="nc">Object</span><span class="o">[</span><span class="n">capacity</span><span class="o">]);</span>
+    <span class="o">}</span>
+    </code></pre></figure>
+
+<p>该构造函数传入一个 int 值，该值作为数组的长度值。如果该值小于 0，则抛出一个运行时异常。如果等于 0，则使用一个空数组，如果大于 0，则创建一个长度为该值的新数组。</p>
+
+<ul>
+  <li>带参构造 2</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java">        <span class="cm">/**
+        * Constructs a new instance of {@code ArrayList} containing the elements of
+        * the specified collection.
+        **
+        @param collection
+        * the collection of elements to add.
+        */</span>
+        <span class="kd">public</span> <span class="nf">ArrayList</span><span class="o">(</span><span class="nc">Collection</span><span class="o">&lt;?</span> <span class="kd">extends</span> <span class="no">E</span><span class="o">&gt;</span> <span class="n">collection</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">collection</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">NullPointerException</span><span class="o">(</span><span class="s">"collection == null"</span><span class="o">);</span>
+        <span class="o">}</span> 
+        <span class="nc">Object</span><span class="o">[]</span> <span class="n">a</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="na">toArray</span><span class="o">();</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">a</span><span class="o">.</span><span class="na">getClass</span><span class="o">()</span> <span class="o">!=</span> <span class="nc">Object</span><span class="o">[].</span><span class="na">class</span><span class="o">)</span> <span class="o">{</span>
+            <span class="nc">Object</span><span class="o">[]</span> <span class="n">newArray</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Object</span><span class="o">[</span><span class="n">a</span><span class="o">.</span><span class="na">length</span><span class="o">];</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">arraycopy</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">newArray</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">a</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">newArray</span><span class="o">;</span>
+        <span class="o">}</span> 
+            <span class="n">array</span> <span class="o">=</span> <span class="n">a</span><span class="o">;</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="na">length</span><span class="o">;</span>
+        <span class="o">}</span>
+    </code></pre></figure>
+
+<ul>
+  <li>
+    <p>如果调用构造函数的时候传入了一个 Collection 的子类，那么先判断该集合是否为 null，为 null 则抛出空指针异常。</p>
+  </li>
+  <li>
+    <p>如果不是则将该集合转换为数组 a，然后将该数组赋值为成员变量 array，将该数组的长度作为成员变量 size。这里面它先判断 a.getClass 是否等于 Object[].class，其实一般都是相等的，我也暂时没想明白为什么多加了这个判断，toArray 方法是 Collection 接口定义的， 因此其所有的子类都有这样的方法， list 集合的 toArray 和 Set 集合的 toArray.返回的都是 Object[]数组。</p>
+  </li>
+  <li>
+    <p>这里讲些题外话，其实在看 Java 源码的时候，作者的很多意图都很费人心思，我能知道他的目标是啥，但是不知道他为何这样写。比如对于 ArrayList， array 是他的成员变量，但是每次在方法中使用该成员变量的时候作者都会重新在方法中开辟一个局部变量，然后给局部变量赋值为 array，然后再使用，有人可能说这是为了防止并发修改 array，毕竟 array 是成员变量，大家都可以使用因此需要将 array 变为局部变量，然后再使用，这样的说法并不是都成立的，也许有时候就是老外们写代码的一个习惯而已。</p>
+  </li>
+</ul>
+
+<h4 id="二add-方法">二、add 方法</h4>
+
+<ul>
+  <li>add 方法有两个重载，这里只研究最简单的那个。</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java">     <span class="cm">/**
+     * Adds the specified object at the end of this {@code ArrayList}.
+     **
+     @param object
+     * the object to add.
+     * @return always true
+     */</span>
+     <span class="nd">@Override</span> <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">add</span><span class="o">(</span><span class="no">E</span> <span class="n">object</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Object</span><span class="o">[]</span> <span class="n">a</span> <span class="o">=</span> <span class="n">array</span><span class="o">;</span>
+        <span class="kt">int</span> <span class="n">s</span> <span class="o">=</span> <span class="n">size</span><span class="o">;</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">s</span> <span class="o">==</span> <span class="n">a</span><span class="o">.</span><span class="na">length</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Object</span><span class="o">[]</span> <span class="n">newArray</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Object</span><span class="o">[</span><span class="n">s</span> <span class="o">+</span>
+        <span class="o">(</span><span class="n">s</span> <span class="o">&lt;</span> <span class="o">(</span><span class="no">MIN_CAPACITY_INCREMENT</span> <span class="o">/</span> <span class="mi">2</span><span class="o">)</span> <span class="o">?</span>
+        <span class="no">MIN_CAPACITY_INCREMENT</span> <span class="o">:</span> <span class="n">s</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="o">)];</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">arraycopy</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">newArray</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">s</span><span class="o">);</span>
+        <span class="n">array</span> <span class="o">=</span> <span class="n">a</span> <span class="o">=</span> <span class="n">newArray</span><span class="o">;</span>
+     <span class="o">}</span> 
+        <span class="n">a</span><span class="o">[</span><span class="n">s</span><span class="o">]</span> <span class="o">=</span> <span class="n">object</span><span class="o">;</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="n">s</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
+        <span class="n">modCount</span><span class="o">++;</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+     <span class="o">}</span></code></pre></figure>
+
+<ol>
+  <li>首先将成员变量 array 赋值给局部变量 a，将成员变量 size 赋值给局部变量 s。</li>
+  <li>判断集合的长度 s 是否等于数组的长度（如果集合的长度已经等于数组的长度了，说明数组已经满了，该重新分 配 新 数 组 了 ） ， 重 新 分 配 数 组 的 时 候 需 要 计 算 新 分 配 内 存 的 空 间 大 小 ， 如 果 当 前 的 长 度 小 于MIN_CAPACITY_INCREMENT/2（这个常量值是 12，除以 2 就是 6，也就是如果当前集合长度小于 6）则分配 12 个长度，如果集合长度大于 6 则分配当前长度 s 的一半长度。这里面用到了三元运算符和位运算，s » 1，意思就是将s 往右移 1 位，相当于 s=s/2，只不过位运算是效率最高的运算。</li>
+  <li>将新添加的 object 对象作为数组的 a[s]个元素。</li>
+  <li>修改集合长度 size 为 s+1</li>
+  <li>modCotun++,该变量是父类中声明的，用于记录集合修改的次数，记录集合修改的次数是为了防止在用迭代器迭代集合时避免并发修改异常，或者说用于判断是否出现并发修改异常的。</li>
+  <li>return true，这个返回值意义不大，因为一直返回 true，除非报了一个运行时异常。</li>
+</ol>
+
+<h4 id="三remove-方法">三、remove 方法</h4>
+
+<ul>
+  <li>remove 方法有两个重载，我们只研究 remove（int index）方法。</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java">     <span class="cm">/**
+     * Removes the object at the specified location from this list.
+     * *
+     @param index
+     * the index of the object to remove.
+     * @return the removed object.
+     * @throws IndexOutOfBoundsException
+     * when {@code location &lt; 0 || location &gt;= size()}
+     */</span>
+     <span class="nd">@Override</span> <span class="kd">public</span> <span class="no">E</span> <span class="nf">remove</span><span class="o">(</span><span class="kt">int</span> <span class="n">index</span><span class="o">)</span> <span class="o">{</span>
+           <span class="nc">Object</span><span class="o">[]</span> <span class="n">a</span> <span class="o">=</span> <span class="n">array</span><span class="o">;</span>
+           <span class="kt">int</span> <span class="n">s</span> <span class="o">=</span> <span class="n">size</span><span class="o">;</span>
+           <span class="k">if</span> <span class="o">(</span><span class="n">index</span> <span class="o">&gt;=</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
+           <span class="n">throwIndexOutOfBoundsException</span><span class="o">(</span><span class="n">index</span><span class="o">,</span> <span class="n">s</span><span class="o">);</span>
+        <span class="o">}</span> 
+        <span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="s">"unchecked"</span><span class="o">)</span>
+        <span class="no">E</span> <span class="n">result</span> <span class="o">=</span> <span class="o">(</span><span class="no">E</span><span class="o">)</span> <span class="n">a</span><span class="o">[</span><span class="n">index</span><span class="o">];</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">arraycopy</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="o">,</span> <span class="n">a</span><span class="o">,</span> <span class="n">index</span><span class="o">,</span> <span class="o">--</span><span class="n">s</span> <span class="o">-</span> <span class="n">index</span><span class="o">);</span>
+        <span class="n">a</span><span class="o">[</span><span class="n">s</span><span class="o">]</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span> <span class="c1">// Prevent memory leak
+</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="n">s</span><span class="o">;</span>
+        <span class="n">modCount</span><span class="o">++;</span>
+        <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+     <span class="o">}</span>
+ </code></pre></figure>
+
+<ol>
+  <li>先将成员变量 array 和 size 赋值给局部变量 a 和 s。</li>
+  <li>判断形参 index 是否大于等于集合的长度，如果成了则抛出运行时异常</li>
+  <li>获取数组中脚标为 index 的对象 result，该对象作为方法的返回值</li>
+  <li>调用 System 的 arraycopy 函数，拷贝原理如下图所示。</li>
+  <li>接下来就是很重要的一个工作，因为删除了一个元素，而且集合整体向前移动了一位，因此需要将集合最后一个元素设置为 null，否则就可能内存泄露。</li>
+  <li>重新给成员变量 array 和 size 赋值</li>
+  <li>记录修改次数</li>
+  <li>返回删除的元素（让用户再看最后一眼）</li>
+</ol>
+
+<h4 id="四clear-方法">四、clear 方法</h4>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java">     <span class="cm">/**
+     * Removes all elements from this {@code ArrayList}, leaving it empty.
+     **
+     @see #isEmpty
+     * @see #size
+     */</span>
+     <span class="nd">@Override</span> <span class="kd">public</span> <span class="kt">void</span> <span class="nf">clear</span><span class="o">()</span> <span class="o">{</span>
+         <span class="k">if</span> <span class="o">(</span><span class="n">size</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+         <span class="nc">Arrays</span><span class="o">.</span><span class="na">fill</span><span class="o">(</span><span class="n">array</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">size</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+         <span class="n">size</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+         <span class="n">modCount</span><span class="o">++;</span>
+     <span class="o">}</span></code></pre></figure>
+
+<ul>
+  <li>如果集合长度不等于 0，则将所有数组的值都设置为 null，然后将成员变量 size 设置为 0 即可，最后让修改记录加 1。</li>
+</ul>
+:ET

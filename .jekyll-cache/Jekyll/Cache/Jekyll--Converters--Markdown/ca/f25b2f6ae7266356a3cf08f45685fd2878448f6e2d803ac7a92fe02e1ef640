@@ -1,0 +1,209 @@
+I"�3<h1 id="linux-kernel-develop">Linux Kernel Develop</h1>
+<h2 id="进程">进程</h2>
+<h3 id="进程描述符与任务结构">进程描述符与任务结构</h3>
+<ul>
+  <li>task_struct</li>
+  <li>pid_t</li>
+  <li>current</li>
+  <li>thread_info</li>
+</ul>
+
+<h3 id="task-state">Task State</h3>
+
+<ul>
+  <li>TASK_RUNNING</li>
+  <li>TASK_INTERRUPTIBLE</li>
+  <li>TASK_UNINTERRUPTIBLE</li>
+  <li>__TASK_TRACED</li>
+  <li>__TASK_STOPPED</li>
+</ul>
+
+<h3 id="manipulating-the-current-process-state">Manipulating the Current Process State</h3>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="cp">#include &lt;linux/sched.h&gt;
+</span> <span class="n">set_task_state</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">state</span><span class="p">);</span>
+ <span class="n">set_current_state</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h3 id="process-context">Process Context</h3>
+<ul>
+  <li>User Space</li>
+  <li>Kernel Space</li>
+</ul>
+
+<h3 id="the-process-family-tree">The Process Family Tree</h3>
+<ul>
+  <li>current</li>
+  <li>init</li>
+  <li>parent</li>
+  <li>children</li>
+  <li>process tree</li>
+  <li><a href="https://www.kernel.org/doc/htmldocs/kernel-api/API-list-entry.html">list_entry</a></li>
+  <li><a href="https://www.kernel.org/doc/htmldocs/kernel-api/API-list-for-each.html">list_for_each</a></li>
+  <li>for_each_process</li>
+</ul>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;linux/init.h&gt;
+#include &lt;linux/module.h&gt;
+#include &lt;linux/sched.h&gt;
+#include &lt;asm/current.h&gt;
+</span>
+
+<span class="n">MODULE_LICENSE</span><span class="p">(</span><span class="s">"Dual BSD/GPL"</span><span class="p">);</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">printTaskInfo</span><span class="p">(</span><span class="k">struct</span> <span class="n">task_struct</span><span class="o">*</span> <span class="n">task</span><span class="p">);</span>
+
+<span class="k">static</span> <span class="kt">int</span> <span class="nf">hello_init</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>	
+	<span class="k">struct</span> <span class="n">task_struct</span> <span class="o">*</span><span class="n">my_parent</span><span class="p">;</span>
+	<span class="k">struct</span> <span class="n">task_struct</span> <span class="o">*</span><span class="n">task</span><span class="p">;</span>
+	<span class="k">struct</span> <span class="n">list_head</span> <span class="o">*</span><span class="n">list</span><span class="p">;</span>
+
+	<span class="c1">//current_info</span>
+	<span class="n">printTaskInfo</span><span class="p">(</span><span class="n">current</span><span class="p">);</span>
+
+	<span class="c1">//parent</span>
+	<span class="n">my_parent</span><span class="o">=</span> <span class="n">current</span><span class="o">-&gt;</span><span class="n">parent</span><span class="p">;</span>
+	<span class="n">printTaskInfo</span><span class="p">(</span><span class="n">my_parent</span><span class="p">);</span>
+
+	<span class="c1">//init task</span>
+	<span class="n">printTaskInfo</span><span class="p">(</span><span class="o">&amp;</span><span class="n">init_task</span><span class="p">);</span>
+
+	<span class="c1">//children</span>
+	<span class="n">list_for_each</span><span class="p">(</span><span class="n">list</span><span class="p">,</span><span class="o">&amp;</span><span class="n">init_task</span><span class="p">.</span><span class="n">children</span><span class="p">){</span>
+		<span class="n">task</span><span class="o">=</span><span class="n">list_entry</span><span class="p">(</span><span class="n">list</span><span class="p">,</span><span class="k">struct</span> <span class="n">task_struct</span><span class="p">,</span><span class="n">sibling</span><span class="p">);</span>
+		<span class="n">printk</span><span class="p">(</span><span class="n">KERN_INFO</span><span class="s">"========children========</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+		<span class="n">printTaskInfo</span><span class="p">(</span><span class="n">task</span><span class="p">);</span>
+	<span class="p">}</span>
+	<span class="c1">//all_process</span>
+	<span class="n">for_each_process</span><span class="p">(</span><span class="n">task</span><span class="p">){</span>
+		<span class="n">printTaskInfo</span><span class="p">(</span><span class="n">task</span><span class="p">);</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">printTaskInfo</span><span class="p">(</span><span class="k">struct</span> <span class="n">task_struct</span><span class="o">*</span> <span class="n">task</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="n">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">"comm=%s,pid=%d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">task</span><span class="o">-&gt;</span><span class="n">comm</span><span class="p">,</span><span class="n">task</span><span class="o">-&gt;</span><span class="n">pid</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">hello_exit</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="n">printk</span><span class="p">(</span><span class="n">KERN_ALERT</span> <span class="s">"Goodbye, cruel world</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+	<span class="n">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">"comm=%s,pid=%d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">current</span><span class="o">-&gt;</span><span class="n">comm</span><span class="p">,</span><span class="n">current</span><span class="o">-&gt;</span><span class="n">pid</span><span class="p">);</span>
+	
+<span class="p">}</span>
+
+<span class="n">module_init</span><span class="p">(</span><span class="n">hello_init</span><span class="p">);</span>
+<span class="n">module_exit</span><span class="p">(</span><span class="n">hello_exit</span><span class="p">);</span>
+
+</code></pre></div></div>
+<h3 id="process-creation">Process Creation</h3>
+
+<ul>
+  <li>Copy On Write</li>
+  <li>Forking
+    <ul>
+      <li>fork()</li>
+      <li>vfork()</li>
+    </ul>
+  </li>
+  <li>Thread
+    <ul>
+      <li>Linux Implement</li>
+      <li>Kernel Thrad
+        <blockquote>
+          <p><a href="https://www.fsl.cs.sunysb.edu/kernel-api/re69.html">kthread_create</a>
+<a href="https://www.fsl.cs.sunysb.edu/kernel-api/re67.html">kthread_run</a>
+<a href="https://www.fsl.cs.sunysb.edu/kernel-api/re71.html">kthread_stop</a></p>
+        </blockquote>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="cp">#define kthread_run(threadfn, data, namefmt, ...) \
+({ \
+struct task_struct *k; \
+\
+k = kthread_create(threadfn, data, namefmt, ## __VA_ARGS__); \
+if (!IS_ERR(k)) \
+wake_up_process(k); \
+k; \
+})
+</span></code></pre></div></div>
+
+<hr />
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;linux/init.h&gt;
+#include &lt;linux/module.h&gt;
+#include &lt;linux/kthread.h&gt;
+#undef SLEEP_MILLI_SEC
+#define SLEEP_MILLI_SEC(nMilliSec)\
+do { \
+	long timeout = (nMilliSec) * HZ / 1000; \
+	while(timeout &gt; 0) \
+		{ \
+			timeout = schedule_timeout(timeout); \
+		} \
+	}while(0); 
+</span>
+	<span class="n">MODULE_LICENSE</span><span class="p">(</span><span class="s">"Dual BSD/GPL"</span><span class="p">);</span>
+
+	<span class="k">static</span> <span class="kt">void</span> <span class="nf">printTaskInfo</span><span class="p">(</span><span class="k">struct</span> <span class="n">task_struct</span><span class="o">*</span> <span class="n">task</span><span class="p">);</span>
+	<span class="k">static</span> <span class="k">struct</span> <span class="n">task_struct</span> <span class="o">*</span><span class="n">kthread</span><span class="p">;</span>
+	<span class="k">static</span> <span class="kt">int</span> <span class="nf">fn</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span> <span class="n">data</span><span class="p">);</span>
+
+	<span class="k">static</span> <span class="kt">int</span> <span class="nf">hello_init</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+	<span class="p">{</span>	
+		<span class="n">kthread</span> <span class="o">=</span> <span class="n">kthread_run</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span><span class="s">"Hello world"</span><span class="p">,</span><span class="s">"HelloWorld"</span><span class="p">);</span>
+	<span class="p">}</span>
+
+	<span class="k">static</span> <span class="kt">void</span> <span class="nf">printTaskInfo</span><span class="p">(</span><span class="k">struct</span> <span class="n">task_struct</span><span class="o">*</span> <span class="n">task</span><span class="p">)</span>
+	<span class="p">{</span>
+		<span class="n">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">"comm=%s,pid=%d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">task</span><span class="o">-&gt;</span><span class="n">comm</span><span class="p">,</span><span class="n">task</span><span class="o">-&gt;</span><span class="n">pid</span><span class="p">);</span>
+
+	<span class="p">}</span>
+
+	<span class="k">static</span> <span class="kt">void</span> <span class="nf">hello_exit</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+	<span class="p">{</span>
+		<span class="k">if</span><span class="p">(</span><span class="n">kthread</span><span class="p">){</span>
+			<span class="n">kthread_stop</span><span class="p">(</span><span class="n">kthread</span><span class="p">);</span>
+		<span class="p">}</span>
+		<span class="n">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">"Goodbye</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+
+	<span class="p">}</span>
+	<span class="k">static</span> <span class="kt">int</span> <span class="nf">fn</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span> <span class="n">data</span><span class="p">)</span>
+	<span class="p">{</span>
+		<span class="kt">char</span> <span class="o">*</span><span class="n">mydata</span> <span class="o">=</span> <span class="n">kmalloc</span><span class="p">(</span><span class="n">strlen</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">GFP_KERNEL</span><span class="p">);</span>  
+		<span class="n">memset</span><span class="p">(</span><span class="n">mydata</span><span class="p">,</span><span class="sc">'\0'</span><span class="p">,</span><span class="n">strlen</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>  
+		<span class="n">strncpy</span><span class="p">(</span><span class="n">mydata</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">strlen</span><span class="p">(</span><span class="n">data</span><span class="p">));</span>  
+		<span class="k">while</span><span class="p">(</span><span class="o">!</span><span class="n">kthread_should_stop</span><span class="p">())</span>  
+		<span class="p">{</span>  
+			<span class="n">SLEEP_MILLI_SEC</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>  
+			<span class="n">printk</span><span class="p">(</span><span class="s">"%s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">mydata</span><span class="p">);</span>  
+		<span class="p">}</span>  
+		<span class="n">kfree</span><span class="p">(</span><span class="n">mydata</span><span class="p">);</span>  
+		<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="n">module_init</span><span class="p">(</span><span class="n">hello_init</span><span class="p">);</span>
+	<span class="n">module_exit</span><span class="p">(</span><span class="n">hello_exit</span><span class="p">);</span>
+</code></pre></div></div>
+<hr />
+<h4 id="process-termination">Process Termination</h4>
+
+<ul>
+  <li>Remove Process Descriptor
+***
+    <h3 id="process-scheduling">Process Scheduling</h3>
+  </li>
+  <li>O(1) scheduler</li>
+  <li>CFS</li>
+  <li>Policy
+    <ul>
+      <li>I/O bound vs Processor bound</li>
+      <li>Process Priority
+***</li>
+    </ul>
+  </li>
+</ul>
+:ET

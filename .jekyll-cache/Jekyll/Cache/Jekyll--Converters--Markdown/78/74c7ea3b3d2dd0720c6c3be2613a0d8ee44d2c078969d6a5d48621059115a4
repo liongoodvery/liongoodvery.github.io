@@ -1,0 +1,72 @@
+I"�<h2 id="在c程序中向logcat打印日志">在c程序中向logcat打印日志</h2>
+
+<ul>
+  <li>
+    <p>Android.mk文件增加</p>
+
+    <p><code class="highlighter-rouge">LOCAL_LDLIBS += -llog</code></p>
+  </li>
+  <li>
+    <p>C代码中增加</p>
+  </li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c"><span class="cp">#include &lt;android/log.h&gt;
+</span> <span class="cp">#define LOG_TAG "System.out"
+</span> <span class="cp">#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
+</span> <span class="cp">#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)</span></code></pre></figure>
+
+<ul>
+  <li>用法类似printf</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c">	<span class="n">printf</span><span class="p">(</span><span class="s">"i = %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">i</span><span class="p">);</span>
+ 	<span class="n">LOGD</span><span class="p">(</span><span class="s">"i = %d"</span><span class="p">,</span><span class="n">i</span><span class="p">);</span>
+	</code></pre></figure>
+
+<h2 id="获得类中方法的签名用javap">获得类中方法的签名用javap</h2>
+
+<ul>
+  <li>在bin classes 目录下 执行javap -s 包名.类名获得类中方法签名</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">	 bin\classes&gt;javap -s com.itheima.alipay.MainActivity
+	 </code></pre></figure>
+
+<h2 id="jni开发时三种模式">jni开发时三种模式</h2>
+
+<ol>
+  <li>只有一个android工程师，jni流程，本地c程序</li>
+  <li>只有一个android工程师，有.so库，头文件，文档</li>
+  <li>有android，有c工程师，把c工程师提供c函数包装调用</li>
+</ol>
+
+<ul>
+  <li>把c工程师提供.c和.h文件拷贝到工程的jni文件夹下</li>
+  <li>在jni源文件中包含.h头文件，调用基中c工程师实现的函数</li>
+  <li>在Android.mk文件中LOCAL_SRC_FILES 需要指定编译c工程师提供.c源文件</li>
+</ul>
+
+<h2 id="c开发jni和c区别">c++开发jni和c区别</h2>
+
+<ul>
+  <li>源文件类型不同，.cpp，.c</li>
+  <li>调用JNIEnv对应函数方法，c++ :</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c">    <span class="c1">//c++通过JNIEnv调用函数 env是一个一级结构体指针，比c调用少第一个参数env
+</span>
+    <span class="n">env</span><span class="o">-&gt;</span><span class="n">NewStringUTF</span><span class="p">(</span><span class="s">"Hello From C++!"</span><span class="p">);</span>
+    <span class="c1">//c调用方法
+</span>
+    <span class="p">(</span><span class="o">*</span><span class="n">env</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">NewStringUTF</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">buf</span><span class="p">);</span>
+    </code></pre></figure>
+
+<ul>
+  <li>c++编写jni程序需要包含javah生成头文件</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c">    <span class="cp">#include "com_itheima_hellofromcpp_MainActivity.h"
+</span>    </code></pre></figure>
+
+:ET

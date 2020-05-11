@@ -1,0 +1,417 @@
+I"s�<h2 id="50十大新特性">5.0十大新特性</h2>
+
+<h3 id="十大新特性">十大新特性</h3>
+<ol>
+  <li>全新Material Design设计风格
+    <ul>
+      <li>新的视觉语言，在基本元素的处理上，借鉴了传统的印刷设计，字体版式、网格系统、空间、比例、配色、图像使用等这些基础的平面设计规范</li>
+    </ul>
+  </li>
+  <li>支持多种设备</li>
+  <li>全新的通知中心设计</li>
+  <li>支持64位ART虚拟机
+    <ul>
+      <li>谷歌承诺所有性能都会比原来提升一倍,Android Lollipop支持更大的寄存器，支持新的指令集，提升了内存寻址空间，未来Android智能手机将支持4GB以上的内存。</li>
+    </ul>
+  </li>
+  <li>Project Volta电池续航改进计划</li>
+  <li>全新的“最近应用程序”</li>
+  <li>改进安全性</li>
+  <li>不同数据独立保存</li>
+  <li>改进搜索
+10.新的API支持，蓝牙4.1、USB Audio、多人分享等其它特性</li>
+</ol>
+
+<h3 id="material-design">Material Design</h3>
+<blockquote>
+  <ul>
+    <li>设计语言,设计标准,设计规范</li>
+    <li>官网:http://www.google.com/design/spec/material-design/introduction.html</li>
+    <li>中文翻译1:http://www.mobileui.cn/material-design/</li>
+    <li>中文翻译2:http://design.1sters.com/#</li>
+  </ul>
+</blockquote>
+
+<h2 id="开发方面新增了哪些内容">开发方面新增了哪些内容</h2>
+<blockquote>
+  <p>关心有哪些新的api</p>
+</blockquote>
+
+<h3 id="50主题">5.0主题</h3>
+<ul>
+  <li>谷歌官方我们提供了三种配色风格</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text"> 		黑色主题 Theme.Material
+ 		明亮主题 Theme.Material.Light
+ 		明亮主题黑色ActionBar Theme.Material.Light.DarkActionBar	
+		</code></pre></figure>
+
+<ul>
+  <li>主题修改:重写属性</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml">    <span class="nt">&lt;style</span> <span class="na">name=</span><span class="s">"CustomTheme1"</span> <span class="na">parent=</span><span class="s">"android:Theme.Material.Light.DarkActionBar"</span><span class="nt">&gt;</span>
+    <span class="c">&lt;!--通知栏颜色--&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">"android:colorPrimaryDark"</span><span class="nt">&gt;</span>#ff3367d6<span class="nt">&lt;/item&gt;</span>
+    <span class="c">&lt;!--标题栏颜色--&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">"android:colorPrimary"</span><span class="nt">&gt;</span>#ff4285f4<span class="nt">&lt;/item&gt;</span>
+    <span class="c">&lt;!--窗口颜色,必须用xml定义颜色--&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">"android:windowBackground"</span><span class="nt">&gt;</span>@color/windowBackground_CustomTheme1_color<span class="nt">&lt;/item&gt;</span>
+    <span class="c">&lt;!--底部操作栏颜色--&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">"android:navigationBarColor"</span><span class="nt">&gt;</span>#ff000000<span class="nt">&lt;/item&gt;</span>
+    <span class="nt">&lt;/style&gt;</span>
+    </code></pre></figure>
+
+<ul>
+  <li>主题切换</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java">	    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">changeTheme</span><span class="o">(</span><span class="kt">int</span> <span class="n">redTheme</span><span class="o">)</span> <span class="o">{</span>
+ 	        <span class="n">overridePendingTransition</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span>
+ 	        <span class="n">finish</span><span class="o">();</span>
+ 	        <span class="nc">Intent</span> <span class="n">intent</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Intent</span><span class="o">(</span><span class="nc">MainActivity</span><span class="o">.</span><span class="na">this</span><span class="o">,</span> <span class="nc">MainActivity</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+ 	        <span class="n">intent</span><span class="o">.</span><span class="na">putExtra</span><span class="o">(</span><span class="s">"themeId"</span><span class="o">,</span> <span class="n">redTheme</span><span class="o">);</span>
+ 	        <span class="n">overridePendingTransition</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span>
+ 	        <span class="n">startActivity</span><span class="o">(</span><span class="n">intent</span><span class="o">);</span>
+ 		<span class="o">}</span>
+	   </code></pre></figure>
+
+<h3 id="toolbardrawerlayoutdrawertoggle的使用">ToolBar&amp;DrawerLayout&amp;DrawerToggle的使用</h3>
+<blockquote>
+  <p>Toolbar是什么？大概说一下它的官方介绍。Toolbar是应用的内容的标准工具栏，<code class="highlighter-rouge">可以说是Actionbar的升级版</code>，两者不是独立关系，要使用Toolbar还是得跟ActionBar扯上关系的。相比Actionbar Toolbar最明显的一点就是变得很<code class="highlighter-rouge">自由，可随处放置</code>，因为它是作为一个<code class="highlighter-rouge">ViewGroup来定义使用的</code>，所以单纯使用ActionBar已经稍显过时了，它的一些方法已被标注过时。</p>
+</blockquote>
+
+<ul>
+  <li>引入v7包,去除actionBar</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml">	 <span class="nt">&lt;style</span> <span class="na">name=</span><span class="s">"AppTheme"</span> <span class="na">parent=</span><span class="s">"Theme.AppCompat.Light.NoActionBar"</span><span class="nt">&gt;</span>
+         <span class="c">&lt;!-- Customize your theme here. --&gt;</span>
+     <span class="nt">&lt;/style&gt;</span>
+	</code></pre></figure>
+
+<ul>
+  <li>创建ToolBar的布局:预览需要<code class="highlighter-rouge">Theme.AppCompat</code></li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml">	 <span class="cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+ 	<span class="nt">&lt;android.support.v7.widget.Toolbar</span>
+     <span class="na">xmlns:android=</span><span class="s">"http://schemas.android.com/apk/res/android"</span>
+     <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+     <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+     <span class="na">android:background=</span><span class="s">"#ff0000"</span><span class="nt">&gt;</span>
+ 	<span class="nt">&lt;/android.support.v7.widget.Toolbar&gt;</span>
+	</code></pre></figure>
+
+<ul>
+  <li>使用toolbar</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java">	 <span class="c1">//布局中使用
+</span>
+ 	<span class="c1">//&lt;include layout="@layout/include_toolbar"&gt;&lt;/include&gt;
+</span>
+ 	<span class="c1">//写代码
+</span>
+ 	<span class="n">mToolbar</span> <span class="o">=</span> <span class="o">(</span><span class="nc">Toolbar</span><span class="o">)</span> <span class="n">findViewById</span><span class="o">(</span><span class="no">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">toolbar</span><span class="o">);</span>
+ 	<span class="n">setSupportActionBar</span><span class="o">(</span><span class="n">mToolbar</span><span class="o">);</span><span class="c1">//这个方法是在ActionBarActivity里面,对应的Activity需要继承actionBarActivity
+</span>
+	</code></pre></figure>
+
+<ul>
+  <li>集成Drawlayout</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java">	<span class="n">mDrawerLayout</span> <span class="o">=</span> <span class="o">(</span><span class="nc">DrawerLayout</span><span class="o">)</span> <span class="n">findViewById</span><span class="o">(</span><span class="no">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">drawLayout</span><span class="o">);</span>
+ 	<span class="n">mDrawerToggle</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ActionBarDrawerToggle</span><span class="o">(</span><span class="nc">MainActivity</span><span class="o">.</span><span class="na">this</span><span class="o">,</span>
+ 	<span class="n">mDrawerLayout</span><span class="o">,</span> <span class="n">mToolbar</span><span class="o">,</span> <span class="no">R</span><span class="o">.</span><span class="na">string</span><span class="o">.</span><span class="na">open</span><span class="o">,</span> <span class="no">R</span><span class="o">.</span><span class="na">string</span><span class="o">.</span><span class="na">close</span><span class="o">);</span>
+	</code></pre></figure>
+
+<ul>
+  <li>集成actionbarToggle</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java">	 <span class="n">mDrawerToggle</span><span class="o">.</span><span class="na">syncState</span><span class="o">();</span>
+ 	<span class="n">mDrawerLayout</span><span class="o">.</span><span class="na">setDrawerListener</span><span class="o">(</span><span class="n">mDrawerToggle</span><span class="o">);</span>
+	</code></pre></figure>
+
+<h3 id="阴影效果">阴影效果</h3>
+
+<ul>
+  <li>矩形的阴影效果
+    <ol>
+      <li>图形大小需要注意</li>
+      <li>elevation有层次关系的作用<code class="highlighter-rouge">android:elevation="6dp"</code></li>
+    </ol>
+  </li>
+  <li>圆形Shape的阴影效果-&gt;可以直接设置</li>
+  <li>原形图片的阴影效果–&gt;设置无效
+    <ol>
+      <li>代码中设置阴影</li>
+    </ol>
+  </li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java">         <span class="nc">ViewOutlineProvider</span> <span class="n">provider</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ViewOutlineProvider</span><span class="o">()</span> <span class="o">{</span>
+             <span class="nd">@Override</span>
+             <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getOutline</span><span class="o">(</span><span class="nc">View</span> <span class="n">view</span><span class="o">,</span> <span class="nc">Outline</span> <span class="n">outline</span><span class="o">)</span> <span class="o">{</span>
+                 <span class="n">outline</span><span class="o">.</span><span class="na">setOval</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">view</span><span class="o">.</span><span class="na">getWidth</span><span class="o">(),</span> <span class="n">view</span><span class="o">.</span><span class="na">getHeight</span><span class="o">());</span>
+             <span class="o">}</span>
+         <span class="o">};</span>
+         <span class="n">iv</span><span class="o">.</span><span class="na">setOutlineProvider</span><span class="o">(</span><span class="n">provider</span><span class="o">);</span>
+    </code></pre></figure>
+
+<h3 id="图片的叠加裁剪圆角图片">图片的叠加裁剪(圆角图片)</h3>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java">     <span class="nc">ViewOutlineProvider</span> <span class="n">provider</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ViewOutlineProvider</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getOutline</span><span class="o">(</span><span class="nc">View</span> <span class="n">view</span><span class="o">,</span> <span class="nc">Outline</span> <span class="n">outline</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">outline</span><span class="o">.</span><span class="na">setOval</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">view</span><span class="o">.</span><span class="na">getWidth</span><span class="o">()</span> <span class="o">-</span> <span class="mi">30</span><span class="o">,</span> <span class="n">view</span><span class="o">.</span><span class="na">getHeight</span><span class="o">()</span> <span class="o">-</span> <span class="mi">30</span><span class="o">);</span>
+        <span class="o">}</span>
+     <span class="o">};</span>
+     <span class="n">iv</span><span class="o">.</span><span class="na">setOutlineProvider</span><span class="o">(</span><span class="n">provider</span><span class="o">);</span>
+     <span class="n">iv</span><span class="o">.</span><span class="na">setClipToOutline</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+   </code></pre></figure>
+
+<h3 id="图片选择器统一张图片使用tinttintmodel的属性">图片选择器–&gt;统一张图片使用tint,<code class="highlighter-rouge">tintmodel</code>的属性</h3>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml">	 <span class="cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+ 	<span class="nt">&lt;bitmap</span> <span class="na">xmlns:android=</span><span class="s">"http://schemas.android.com/apk/res/android"</span>
+ 	        <span class="na">android:src=</span><span class="s">"@mipmap/g24"</span>
+ 	        <span class="na">android:tint=</span><span class="s">"#ff9cff94"</span>
+ 	        <span class="na">android:tintMode=</span><span class="s">"multiply"</span><span class="nt">&gt;</span>
+ 	<span class="nt">&lt;/bitmap&gt;</span>
+	</code></pre></figure>
+
+<h3 id="调色板">调色板</h3>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java">	 <span class="nc">Bitmap</span> <span class="n">bitmap</span> <span class="o">=</span> <span class="nc">BitmapFactory</span><span class="o">.</span><span class="na">decodeResource</span><span class="o">(</span><span class="n">getResources</span><span class="o">(),</span> <span class="no">R</span><span class="o">.</span><span class="na">mipmap</span><span class="o">.</span><span class="na">h17</span><span class="o">);</span>
+         <span class="c1">//        如果操作本来就属于后台线程，可以使用：
+</span>
+         <span class="c1">//        Palette p = Palette.generate(bitmap);
+</span>
+         <span class="c1">//        如果在主线程中，我们可以使用异步的方式：
+</span>
+     <span class="nc">Palette</span><span class="o">.</span><span class="na">generateAsync</span><span class="o">(</span><span class="n">bitmap</span><span class="o">,</span> <span class="k">new</span> <span class="nc">Palette</span><span class="o">.</span><span class="na">PaletteAsyncListener</span><span class="o">()</span> <span class="o">{</span>
+         <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onGenerated</span><span class="o">(</span><span class="nc">Palette</span> <span class="n">palette</span><span class="o">)</span> <span class="o">{</span>
+             <span class="n">mIv_muted</span><span class="o">.</span><span class="na">setBackgroundColor</span><span class="o">(</span><span class="n">palette</span><span class="o">.</span><span class="na">getMutedColor</span><span class="o">(</span><span class="nc">Color</span><span class="o">.</span><span class="na">BLACK</span><span class="o">));</span>
+             <span class="n">mIv_muted_light</span><span class="o">.</span><span class="na">setBackgroundColor</span><span class="o">(</span><span class="n">palette</span><span class="o">.</span><span class="na">getLightMutedColor</span><span class="o">(</span><span class="nc">Color</span><span class="o">.</span><span class="na">BLACK</span><span class="o">));</span>
+             <span class="n">mIv_vibrant</span><span class="o">.</span><span class="na">setBackgroundColor</span><span class="o">(</span><span class="n">palette</span><span class="o">.</span><span class="na">getVibrantColor</span><span class="o">(</span><span class="nc">Color</span><span class="o">.</span><span class="na">BLACK</span><span class="o">));</span>
+         <span class="o">}</span>
+     <span class="o">});</span>
+	</code></pre></figure>
+
+<h3 id="水波纹效果">水波纹效果</h3>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java">	<span class="nl">android:</span><span class="n">background</span><span class="o">=</span><span class="s">"?android:selectableItemBackground"</span>
+ 	<span class="nl">android:</span><span class="n">background</span><span class="o">=</span><span class="s">"?android:selectableItemBackgroundBorderless"</span>
+ 	<span class="nl">android:</span><span class="n">background</span><span class="o">=</span><span class="s">"#ff5cffbf"</span>
+    <span class="n">mCustomAnimation</span><span class="o">.</span><span class="na">setOnClickListener</span><span class="o">(</span><span class="k">new</span> <span class="nc">View</span><span class="o">.</span><span class="na">OnClickListener</span><span class="o">()</span> <span class="o">{</span>
+             <span class="nd">@Override</span>
+             <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onClick</span><span class="o">(</span><span class="nc">View</span> <span class="n">v</span><span class="o">)</span> <span class="o">{</span>
+                  <span class="cm">/*
+                     view 操作的视图
+                     centerX 动画开始的中心点X
+                     centerY 动画开始的中心点Y
+                     startRadius 动画开始半径
+                     startRadius 动画结束半径
+                  */</span>
+                 <span class="kt">int</span> <span class="n">centerX</span> <span class="o">=</span> <span class="n">mCustomAnimation</span><span class="o">.</span><span class="na">getWidth</span><span class="o">()</span> <span class="o">/</span> <span class="mi">2</span><span class="o">;</span>
+                 <span class="kt">int</span> <span class="n">centerY</span> <span class="o">=</span> <span class="n">mCustomAnimation</span><span class="o">.</span><span class="na">getHeight</span><span class="o">()</span> <span class="o">/</span> <span class="mi">2</span><span class="o">;</span>
+                 <span class="kt">float</span> <span class="n">startRadius</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+                 <span class="kt">float</span> <span class="n">endRadius</span> <span class="o">=</span> <span class="n">mCustomAnimation</span><span class="o">.</span><span class="na">getWidth</span><span class="o">();</span>
+ 
+                 <span class="nc">Animator</span> <span class="n">animator</span> <span class="o">=</span> <span class="nc">ViewAnimationUtils</span><span class="o">.</span><span class="na">createCircularReveal</span><span class="o">(</span><span class="n">mCustomAnimation</span><span class="o">,</span>
+                         <span class="n">centerX</span><span class="o">,</span>
+                         <span class="n">centerY</span><span class="o">,</span> <span class="n">startRadius</span><span class="o">,</span> <span class="n">endRadius</span><span class="o">);</span>
+                 <span class="n">animator</span><span class="o">.</span><span class="na">setDuration</span><span class="o">(</span><span class="mi">3000</span><span class="o">);</span>
+                 <span class="n">animator</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+             <span class="o">}</span>
+         <span class="o">});</span>
+	</code></pre></figure>
+
+<h3 id="状态动画background可以设置属性动画帧动画矢量图动画转场动画">状态动画,background可以设置属性动画,帧动画,矢量图动画,转场动画</h3>
+
+<h3 id="vector矢量图">vector矢量图</h3>
+
+<ul>
+  <li>矢量图和位图的区别</li>
+  <li>矢量图展示
+    <ul>
+      <li>桃心</li>
+      <li>三角形</li>
+    </ul>
+  </li>
+  <li>矢量图动画</li>
+</ul>
+
+<h3 id="步骤">步骤</h3>
+
+<ul>
+  <li>
+    <vector>元素的矢量资源，在res/drawable/(文件夹)`vector_triangle.xml`
+		
+		
+</vector>
+  </li>
+</ul>
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml">		 <span class="cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+ 		<span class="nt">&lt;vector</span> <span class="na">xmlns:android=</span><span class="s">"http://schemas.android.com/apk/res/android"</span>
+ 		        <span class="na">android:width=</span><span class="s">"64dp"</span>
+ 		        <span class="na">android:height=</span><span class="s">"64dp"</span>
+ 		        <span class="na">android:viewportHeight=</span><span class="s">"600"</span>
+ 		        <span class="na">android:viewportWidth=</span><span class="s">"600"</span>
+ 		    <span class="nt">&gt;</span>
+ 		    <span class="nt">&lt;path</span>
+ 		        <span class="na">android:name=</span><span class="s">"v"</span>
+ 		        <span class="na">android:fillColor=</span><span class="s">"#000000"</span>
+ 		        <span class="na">android:pathData=</span><span class="s">"M300,70 l 0,-70 70,70 0,0 -70,70z"</span><span class="nt">/&gt;</span>
+ 		
+ 		<span class="nt">&lt;/vector&gt;</span>
+		</code></pre></figure>
+
+<ul>
+  <li>
+    <animated-vector>元素的矢量资源动画，在res/drawable/(文件夹)`animated_vector_triangle.xml`
+
+		
+</animated-vector>
+  </li>
+</ul>
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml">		 <span class="cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+ 		<span class="nt">&lt;animated-vector</span>
+ 		    <span class="na">xmlns:android=</span><span class="s">"http://schemas.android.com/apk/res/android"</span>
+ 		    <span class="na">android:drawable=</span><span class="s">"@drawable/vector_triangle"</span>
+ 		    <span class="nt">&gt;</span>
+ 		    <span class="nt">&lt;target</span>
+ 		        <span class="na">android:name=</span><span class="s">"v"</span>
+ 		        <span class="na">android:animation=</span><span class="s">"@anim/path_morph"</span><span class="nt">/&gt;</span>
+ 		    <span class="c">&lt;!--&lt;target--&gt;</span>
+ 		    <span class="c">&lt;!--android:name="v"  指定名字.这个是后面需要--&gt;</span>
+ 		    <span class="c">&lt;!--android:animation="@anim/path_morph"  指定一个动画/&gt;--&gt;</span>
+ 		
+ 		<span class="nt">&lt;/animated-vector&gt;</span>
+		</code></pre></figure>
+
+<ul>
+  <li>&lt; objectAnimator&gt;元素的一个或多个对象动画器，在res/anim/(文件夹)<code class="highlighter-rouge">path_morph.xml</code></li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml">		 <span class="cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+ 		<span class="nt">&lt;objectAnimator</span>
+ 		    <span class="na">xmlns:android=</span><span class="s">"http://schemas.android.com/apk/res/android"</span>
+ 		    <span class="na">android:duration=</span><span class="s">"5000"</span>
+ 		    <span class="na">android:propertyName=</span><span class="s">"pathData"</span>
+ 		    <span class="na">android:valueFrom=</span><span class="s">"M300,70 l 0,-70 70,70 0,0 -70,70z"</span>
+ 		    <span class="na">android:valueTo=</span><span class="s">"M300,70 l 0,-70 70,0 0,140 -70,0 z"</span>
+ 		    <span class="na">android:valueType=</span><span class="s">"pathType"</span><span class="nt">&gt;</span>
+ 		<span class="nt">&lt;/objectAnimator&gt;</span>
+		</code></pre></figure>
+
+<ul>
+  <li>启动动画</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java">	 <span class="nc">View</span> <span class="n">triangle</span> <span class="o">=</span> <span class="n">findViewById</span><span class="o">(</span><span class="no">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">triangle</span><span class="o">);</span>
+         <span class="nc">Drawable</span> <span class="n">drawable</span> <span class="o">=</span> <span class="n">triangle</span><span class="o">.</span><span class="na">getBackground</span><span class="o">();</span>
+ 
+         <span class="k">if</span> <span class="o">(</span><span class="n">drawable</span> <span class="k">instanceof</span> <span class="nc">Animatable</span><span class="o">)</span> <span class="o">{</span>
+             <span class="o">((</span><span class="nc">Animatable</span><span class="o">)</span> <span class="n">drawable</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+         <span class="o">}</span>
+	</code></pre></figure>
+
+<h3 id="recycleview">recycleView</h3>
+
+<ul>
+  <li>view adapter layoutmanager</li>
+  <li>纵向</li>
+  <li>网格</li>
+  <li>瀑布流</li>
+  <li>横向</li>
+  <li>下拉刷新</li>
+</ul>
+
+<h3 id="关键方法">关键方法</h3>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java">	 <span class="kd">private</span> <span class="kt">void</span> <span class="nf">initListAdapterV</span><span class="o">()</span> <span class="o">{</span>
+         <span class="c1">//设置layoutManager
+</span>
+         <span class="nc">LinearLayoutManager</span> <span class="n">layoutManger</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LinearLayoutManager</span><span class="o">(</span><span class="nc">MainActivity</span><span class="o">.</span><span class="na">this</span><span class="o">);</span>
+         <span class="n">mRecyclerView</span><span class="o">.</span><span class="na">setLayoutManager</span><span class="o">(</span><span class="n">layoutManger</span><span class="o">);</span>
+ 
+         <span class="c1">//设置adapter
+</span>
+         <span class="nc">ListAdapter</span> <span class="n">adapter</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ListAdapter</span><span class="o">(</span><span class="nc">MainActivity</span><span class="o">.</span><span class="na">this</span><span class="o">,</span> <span class="n">mDatas</span><span class="o">);</span>
+         <span class="n">mRecyclerView</span><span class="o">.</span><span class="na">setAdapter</span><span class="o">(</span><span class="n">adapter</span><span class="o">);</span>
+     <span class="o">}</span>
+ 
+     <span class="kd">private</span> <span class="kt">void</span> <span class="nf">initListAdapterH</span><span class="o">()</span> <span class="o">{</span>
+         <span class="c1">//设置layoutManager
+</span>
+         <span class="nc">LinearLayoutManager</span> <span class="n">layoutManger</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LinearLayoutManager</span><span class="o">(</span><span class="nc">MainActivity</span><span class="o">.</span><span class="na">this</span><span class="o">,</span>
+                 <span class="nc">LinearLayoutManager</span><span class="o">.</span><span class="na">HORIZONTAL</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>
+         <span class="n">mRecyclerView</span><span class="o">.</span><span class="na">setLayoutManager</span><span class="o">(</span><span class="n">layoutManger</span><span class="o">);</span>
+ 
+         <span class="c1">//设置adapter
+</span>
+         <span class="nc">ListAdapter</span> <span class="n">adapter</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ListAdapter</span><span class="o">(</span><span class="nc">MainActivity</span><span class="o">.</span><span class="na">this</span><span class="o">,</span> <span class="n">mDatas</span><span class="o">);</span>
+         <span class="n">mRecyclerView</span><span class="o">.</span><span class="na">setAdapter</span><span class="o">(</span><span class="n">adapter</span><span class="o">);</span>
+     <span class="o">}</span>
+ 
+     <span class="kd">private</span> <span class="kt">void</span> <span class="nf">initGridAdapterV</span><span class="o">()</span> <span class="o">{</span>
+         <span class="c1">//设置layoutManager
+</span>
+         <span class="nc">LinearLayoutManager</span> <span class="n">layoutManger</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">GridLayoutManager</span><span class="o">(</span><span class="nc">MainActivity</span><span class="o">.</span><span class="na">this</span><span class="o">,</span> <span class="mi">2</span><span class="o">);</span>
+         <span class="n">mRecyclerView</span><span class="o">.</span><span class="na">setLayoutManager</span><span class="o">(</span><span class="n">layoutManger</span><span class="o">);</span>
+ 
+         <span class="c1">//设置adapter
+</span>
+         <span class="nc">ListAdapter</span> <span class="n">adapter</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ListAdapter</span><span class="o">(</span><span class="nc">MainActivity</span><span class="o">.</span><span class="na">this</span><span class="o">,</span> <span class="n">mDatas</span><span class="o">);</span>
+         <span class="n">mRecyclerView</span><span class="o">.</span><span class="na">setAdapter</span><span class="o">(</span><span class="n">adapter</span><span class="o">);</span>
+     <span class="o">}</span>
+ 
+     <span class="kd">private</span> <span class="kt">void</span> <span class="nf">initGridAdapterH</span><span class="o">()</span> <span class="o">{</span>
+         <span class="c1">//设置layoutManager
+</span>
+         <span class="nc">LinearLayoutManager</span> <span class="n">layoutManger</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">GridLayoutManager</span><span class="o">(</span><span class="nc">MainActivity</span><span class="o">.</span><span class="na">this</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span>
+                 <span class="nc">LinearLayoutManager</span><span class="o">.</span><span class="na">HORIZONTAL</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>
+         <span class="n">mRecyclerView</span><span class="o">.</span><span class="na">setLayoutManager</span><span class="o">(</span><span class="n">layoutManger</span><span class="o">);</span>
+ 
+         <span class="c1">//设置adapter
+</span>
+         <span class="nc">ListAdapter</span> <span class="n">adapter</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ListAdapter</span><span class="o">(</span><span class="nc">MainActivity</span><span class="o">.</span><span class="na">this</span><span class="o">,</span> <span class="n">mDatas</span><span class="o">);</span>
+         <span class="n">mRecyclerView</span><span class="o">.</span><span class="na">setAdapter</span><span class="o">(</span><span class="n">adapter</span><span class="o">);</span>
+     <span class="o">}</span>
+ 
+     <span class="kd">private</span> <span class="kt">void</span> <span class="nf">initStaggeredGridAdapterV</span><span class="o">()</span> <span class="o">{</span>
+         <span class="c1">//设置layoutManager
+</span>
+         <span class="nc">StaggeredGridLayoutManager</span> <span class="n">staggeredGridLayoutManager</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StaggeredGridLayoutManager</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span>
+                 <span class="nc">StaggeredGridLayoutManager</span><span class="o">.</span><span class="na">VERTICAL</span><span class="o">);</span>
+         <span class="n">mRecyclerView</span><span class="o">.</span><span class="na">setLayoutManager</span><span class="o">(</span><span class="n">staggeredGridLayoutManager</span><span class="o">);</span>
+ 
+         <span class="c1">//设置adapter
+</span>
+         <span class="nc">StraggerAdapter</span> <span class="n">adapter</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StraggerAdapter</span><span class="o">(</span><span class="nc">MainActivity</span><span class="o">.</span><span class="na">this</span><span class="o">,</span> <span class="n">mStraggerDatas</span><span class="o">);</span>
+         <span class="n">mRecyclerView</span><span class="o">.</span><span class="na">setAdapter</span><span class="o">(</span><span class="n">adapter</span><span class="o">);</span>
+     <span class="o">}</span>
+ 
+     <span class="kd">private</span> <span class="kt">void</span> <span class="nf">initStaggeredGridAdapterH</span><span class="o">()</span> <span class="o">{</span>
+         <span class="c1">//设置layoutManager
+</span>
+         <span class="nc">StaggeredGridLayoutManager</span> <span class="n">staggeredGridLayoutManager</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StaggeredGridLayoutManager</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span>
+                 <span class="nc">StaggeredGridLayoutManager</span><span class="o">.</span><span class="na">HORIZONTAL</span><span class="o">);</span>
+         <span class="n">mRecyclerView</span><span class="o">.</span><span class="na">setLayoutManager</span><span class="o">(</span><span class="n">staggeredGridLayoutManager</span><span class="o">);</span>
+ 
+         <span class="c1">//设置adapter
+</span>
+         <span class="nc">StraggerAdapter</span> <span class="n">adapter</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StraggerAdapter</span><span class="o">(</span><span class="nc">MainActivity</span><span class="o">.</span><span class="na">this</span><span class="o">,</span> <span class="n">mStraggerDatas</span><span class="o">);</span>
+         <span class="n">mRecyclerView</span><span class="o">.</span><span class="na">setAdapter</span><span class="o">(</span><span class="n">adapter</span><span class="o">);</span>
+     <span class="o">}</span>
+	</code></pre></figure>
+
+<p>###cardview
+	hellword</p>
+
+:ET

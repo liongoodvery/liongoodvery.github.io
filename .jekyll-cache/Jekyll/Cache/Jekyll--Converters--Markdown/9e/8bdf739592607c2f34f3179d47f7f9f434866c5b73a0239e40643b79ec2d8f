@@ -1,0 +1,260 @@
+I"�4<h2 id="复习">复习</h2>
+<ul>
+  <li>1.什么是指针？</li>
+  <li>2.指针的作用？</li>
+  <li>3.指针相关的运算符？ &amp; *</li>
+  <li>4.指针的数据类型和指针类型 char *p; int *q;</li>
+  <li>5.指针变量保存带有类型地址</li>
+  <li>6.指针的运算</li>
+</ul>
+
+<h3 id="指针和数组的关系">指针和数组的关系</h3>
+
+<ul>
+  <li>指针变量保存数组名 <code class="highlighter-rouge">int a[6]; int *p = a;</code></li>
+</ul>
+
+<hr />
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">    a[i]	&lt;=&gt; 	*(a + i)	&lt;=&gt;	*(p + i)	&lt;=&gt; 	p[i]
+    </code></pre></figure>
+
+<h3 id="字符串">字符串</h3>
+<ul>
+  <li>c语言中使用字符数组保存字符串 char buf[5],字符串保存时需要多一个字节保存字符串结束标志’\0’</li>
+  <li>用字符指针char *p找到字符串</li>
+  <li>用string.h头文件提供字符串处理相关函数声明</li>
+</ul>
+
+<h3 id="结构体">结构体</h3>
+<ul>
+  <li>用结构体定义新数据类型 struct
+  姓名				学号			年龄			成绩
+  char name[20]	int id;		int age;	float score;</li>
+</ul>
+
+<h3 id="函数指针">函数指针</h3>
+<ul>
+  <li>函数的入口地址：二进制代码在代码段起始位置，函数名代表函数的入口地址。</li>
+  <li>函数指针变量保存函数入口地址</li>
+</ul>
+
+<hr />
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c">    <span class="kt">void</span> <span class="nf">fun1</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">);</span><span class="c1">//函数声明
+</span>
+    <span class="kt">void</span> <span class="nf">fun1</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">){</span> <span class="c1">//函数的定义
+</span>
+    <span class="k">return</span> <span class="p">;</span>
+    <span class="p">}</span>
+    
+    <span class="kt">void</span> <span class="o">*</span><span class="nf">fun2</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">,</span><span class="kt">int</span> <span class="o">*</span><span class="n">b</span><span class="p">);</span><span class="c1">//函数的声明
+</span>
+    
+    <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">)(</span><span class="kt">int</span><span class="p">);</span><span class="c1">//函数指针变量的定义
+</span>
+    
+    <span class="n">p</span> <span class="o">=</span> <span class="n">fun1</span><span class="p">;</span>
+    
+    <span class="kt">void</span> <span class="o">*</span> <span class="p">(</span><span class="o">*</span><span class="n">pfun</span><span class="p">)(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="p">);</span><span class="c1">//函数指针变量定义
+</span>
+    
+    </code></pre></figure>
+
+<h3 id="typedef起别名">typedef起别名</h3>
+
+<ul>
+  <li>typedef 给存在的数据类型起别名</li>
+</ul>
+
+<hr />
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c">    <span class="kt">int</span> <span class="n">a</span><span class="p">;</span><span class="c1">//a是一个标识符，是个变量名
+</span>
+    
+    <span class="k">typedef</span> <span class="kt">int</span> <span class="kt">int32_t</span><span class="p">;</span><span class="c1">//int32_t是一个标识符，int32_t类型别名，int32_t和int等价
+</span>
+    
+    <span class="k">struct</span> <span class="n">Student</span><span class="p">{</span>
+    <span class="c1">//...
+</span>
+    <span class="p">}</span><span class="n">stu</span><span class="p">,</span><span class="o">*</span><span class="n">ptr</span><span class="p">;</span><span class="c1">//stu是一个标识符，是个变量名
+</span>
+    
+    <span class="k">typedef</span> <span class="k">struct</span> <span class="n">Student</span><span class="p">{</span>
+    <span class="c1">//...
+</span>
+    <span class="p">}</span><span class="n">stu</span><span class="p">;</span><span class="c1">//stu是一个标识符，stu是struct Student类型的别名
+</span>
+    
+    <span class="k">typedef</span> <span class="k">struct</span> <span class="n">Student</span> <span class="o">*</span><span class="n">pstu</span><span class="p">;</span><span class="c1">//pstu是结构体指针类型
+</span>
+    </code></pre></figure>
+
+<h3 id="jnih头文件">jni.h头文件</h3>
+<hr />
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c">     <span class="k">typedef</span> <span class="k">struct</span> <span class="n">JNINativeInterface</span><span class="o">*</span> <span class="n">JNIEnv</span><span class="p">;</span> <span class="c1">//JNIEnv * env;变量
+</span>
+    </code></pre></figure>
+
+<p>利用env调用struct JNINativeInterface中的函数指针变量</p>
+
+<hr />
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c">    <span class="c1">//env &lt;=&gt; JNIEnv * &lt;=&gt; struct JNINativeInterface** 二级结构体指针
+</span>
+    <span class="n">jclass</span>      <span class="p">(</span><span class="o">*</span><span class="n">FindClass</span><span class="p">)(</span><span class="n">JNIEnv</span><span class="o">*</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span><span class="p">);</span>
+    <span class="p">(</span><span class="o">**</span><span class="n">env</span><span class="p">).</span><span class="n">FindClass</span><span class="p">();</span>
+    <span class="p">(</span><span class="o">*</span><span class="n">env</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">FindClass</span><span class="p">();</span>
+    </code></pre></figure>
+
+<h3 id="jni开发相关概念">jni开发相关概念</h3>
+<ul>
+  <li>交叉编译：在一个平台上为另一个平台编译代码，不同的操作系统windows linux Mac OS X,不同处理器架构 X86 ARM Mips</li>
+  <li>工具链：一套顺序调用的编译工具，形成一个链条</li>
+  <li>函数库：实现某类功能的函数集合，函数已经编译二进制机器代码。.h头文件声明函数,.so/.a库文件</li>
+</ul>
+
+<h3 id="静态库和动态库">静态库和动态库</h3>
+<ul>
+  <li>静态库 .a :只用于程序链接，静态链接把库文件中函数实现拷贝到程序中。所以程序运行时候不需库</li>
+  <li>动态库/共享库 .so ： 用于程序链接，只是记录用到的函数，所以在程序运行之前需要先加载动态库</li>
+</ul>
+
+<h3 id="开发工具介绍">开发工具介绍</h3>
+<ul>
+  <li>NDK：Native Development kit 本地开发工具集</li>
+  <li>CDT :  C/C++ Development Tools ： Eclipse插件</li>
+  <li>Cygwin:在windows下提供一个类unix linux模拟环境</li>
+</ul>
+
+<h3 id="ndk目录结构">NDK目录结构</h3>
+<ul>
+  <li>build 目录下有 .mk文件，指导工程构建和编译</li>
+  <li>docs 开发文档</li>
+  <li>platforms		android-18\arch-arm\usr\ include 头文件目录 lib库文件目录</li>
+  <li>prebuilt 		windows-x86_64\bin make.exe工程管理器</li>
+  <li>samples 开发实例</li>
+  <li>toolchains 工具链</li>
+  <li>ndk-build.cmd 谷歌包装过的make工具</li>
+</ul>
+
+<h3 id="jni开发流程">jni开发流程</h3>
+<p>目标：使用NDK工具编译出本地.so动态库，把.so库文件装入应用程序。</p>
+
+<ul>
+  <li>阶段1 编码</li>
+  <li>新建Android工程，用native声明本地方法，调用本地方法</li>
+</ul>
+
+<hr />
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java">    <span class="cm">/**
+    * 用native声明的本地方法
+    * @return c语言中提供字符串
+    */</span>
+    <span class="kd">public</span> <span class="kd">native</span> <span class="nc">String</span> <span class="nf">helloFromC</span><span class="o">();</span>
+    
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">click</span><span class="o">(</span><span class="nc">View</span> <span class="n">v</span><span class="o">){</span>
+    <span class="nc">Toast</span><span class="o">.</span><span class="na">makeText</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="n">helloFromC</span><span class="o">(),</span> <span class="nc">Toast</span><span class="o">.</span><span class="na">LENGTH_SHORT</span><span class="o">).</span><span class="na">show</span><span class="o">();</span>
+    <span class="o">}</span>
+    </code></pre></figure>
+
+<ul>
+  <li>新建jni文件夹，在其中新建hello.c源文件，实现本地方法</li>
+</ul>
+
+<hr />
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c">    <span class="cp">#include &lt;jni.h&gt;
+</span>    <span class="cm">/**
+    * jni规范 java中本地方法对应到c里面的函数名如下|
+    * Java_包名(包名中的.需改为_)_类名_本地方法名
+    * JNIEnv *env:代表jni环境，提供java和c之前数据转换方法
+    * jobject obj : 是调用本地方法的类的对象
+    */</span>
+    <span class="n">jstring</span> <span class="nf">Java_com_itheima_hellofromc_MainActivity_helloFromC</span><span class="p">(</span><span class="n">JNIEnv</span> <span class="o">*</span><span class="n">env</span><span class="p">,</span> <span class="n">jobject</span> <span class="n">obj</span><span class="p">){</span>
+    <span class="kt">char</span> <span class="n">buf</span><span class="p">[]</span> <span class="o">=</span> <span class="s">"Hello From C!"</span><span class="p">;</span><span class="c1">// buf &lt;=&gt; &amp;buf[0] : char *
+</span>
+    <span class="c1">//需要转换c中char *字符串为java中的String
+</span>
+    <span class="c1">//	jstring NewStringUTF(JNIEnv *env, const char *bytes);
+</span>
+    <span class="c1">//	env : JNIEnv * &lt;=&gt; struct JNINativeInterface* *
+</span>
+    <span class="c1">//	(**env).NewStringUTF();
+</span>
+    <span class="c1">//	(*env)-&gt;NewStringUTF();
+</span>
+    <span class="k">return</span> <span class="p">(</span><span class="o">*</span><span class="n">env</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">NewStringUTF</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">buf</span><span class="p">);</span>
+    <span class="p">}</span>
+    </code></pre></figure>
+
+<ul>
+  <li>阶段2 编译</li>
+</ul>
+
+<ol>
+  <li>在jni文件夹下新建Android.mk，指导编译</li>
+  <li>在path环境变量中指定ndk-build.cmd文件所在路径</li>
+  <li>在jni文件夹下执行ndk-build，生成并安装.so文件</li>
+  <li>在调用类中加载动态库</li>
+</ol>
+
+<hr />
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">    LOCAL_PATH := $(call my-dir)				#指定源文件当前目录
+     $(CLEAR_VARS)						#清除LOCAL_XXX编译变量，LOCAL_PATH除外
+        := hello					#指定生成(模块名)动态库名hello,生成的动态库文件名libhello.so
+    LOCAL_SRC_FILES := hello.c					#
+     $(BUILD_SHARED_LIBRARY)				#指定编译目标类型为动态库.so
+
+    static{
+    System.loadLibrary("hello");//需要不带前后缀的库名
+    }
+    </code></pre></figure>
+
+<h2 id="jni开发中常见错误">jni开发中常见错误</h2>
+<ol>
+  <li>找不到库Caused by: java.lang.UnsatisfiedLinkError: Couldn’t load calc-jn1: findLibrary returned null
+    <ul>
+      <li>产生原因1：加载库名错误</li>
+      <li>产生原因2：生成的库和运行平台不匹配，解决办法在jni文件夹下新建Application.mk文件其中指定 APP_ABI := all 生成所有支持平台的.so库</li>
+    </ul>
+  </li>
+  <li>找不到方法 java.lang.UnsatisfiedLinkError: Native method not found: com.itheima.resultfromc.MainActivity.resultFromC:(II)I
+    <ul>
+      <li>产生原因1：本地方法名不符合规范</li>
+      <li>产生原因2：没有加载库</li>
+    </ul>
+  </li>
+</ol>
+
+<h2 id="javah命令用法">javah命令用法</h2>
+<ul>
+  <li>jdk1.6 需在D:\jni02\code\02_ResultFromC\bin\classes 与com同层目录下执行javah</li>
+  <li>jdkl.7 需在D:\jni02\code\02_ResultFromC\src 与com同层目录下执行javah</li>
+</ul>
+
+<hr />
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c">    <span class="c1">//D:\jni02\code\02_ResultFromC\src&gt;javah com.itheima.resultfromc.MainActivity
+</span>
+    <span class="c1">//生成com_itheima_resultfromc_MainActivity.h
+</span>
+    <span class="n">JNIEXPORT</span> <span class="n">jint</span> <span class="n">JNICALL</span> <span class="nf">Java_com_itheima_resultfromc_MainActivity_result_1from_1c</span>
+    <span class="p">(</span><span class="n">JNIEnv</span> <span class="o">*</span><span class="p">,</span> <span class="n">jobject</span><span class="p">,</span> <span class="n">jint</span><span class="p">,</span> <span class="n">jint</span><span class="p">);</span>
+    </code></pre></figure>
+
+<h2 id="ndk结合eclipse开发">ndk结合eclipse开发</h2>
+<ul>
+  <li>1.新建工程，声明本地方法，调用本地方法</li>
+  <li>2.给eclipse指定ndk路径</li>
+  <li>3.添加本地支持，自动生成jni文件及cpp源文件，Android.mk文件，改后缀名</li>
+  <li>4.添加jni头文件路径</li>
+  <li>5.javah命令生包含本地函数名头文件，把头文件拷贝jni文件夹，本地函数名拷贝到源文件，实现功能</li>
+  <li>6.添加加载动态库语句</li>
+  <li>7.运行程序，自动编译</li>
+</ul>
+:ET

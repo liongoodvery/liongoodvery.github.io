@@ -1,0 +1,273 @@
+I"M<h3 id="kill-and-raise-functions">kill and raise Functions</h3>
+
+<ul>
+  <li><code class="highlighter-rouge">kill()</code>  sends a signal to a process or a group of processes.</li>
+  <li><code class="highlighter-rouge">raise()</code> sends a signal to itself.</li>
+</ul>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;signal.h&gt;
+</span><span class="kt">int</span> <span class="nf">kill</span><span class="p">(</span><span class="n">pid_t</span> <span class="n">pid</span><span class="p">,</span> <span class="kt">int</span> <span class="n">signo</span><span class="p">);</span>
+<span class="kt">int</span> <span class="nf">raise</span><span class="p">(</span><span class="kt">int</span> <span class="n">signo</span><span class="p">);</span>
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">pid</th>
+      <th style="text-align: left">meanging</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">pid&gt;0</td>
+      <td style="text-align: left">send to the process whose process id is pid</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">pid==0</td>
+      <td style="text-align: left">send to processes whose group id is the invoking process’s group id</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">pid==-1</td>
+      <td style="text-align: left">send to processes for which the invoing process has the permission to send</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">pid&lt;-1</td>
+      <td style="text-align: left">send to processes whoes group id is absolute value of pid</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>What if the signo==0?</li>
+</ul>
+
+<h3 id="alarm-and-pause-functions">alarm and pause Functions</h3>
+
+<ul>
+  <li><code class="highlighter-rouge">alarm()</code> allows us to set a timer that will expire at a specified time in the future. When the timer expires, the SIGALRM signal is generated. If we ignore or don’t catch this signal, its default action is to terminate the process.</li>
+  <li><code class="highlighter-rouge">pause()</code> function suspends the calling process until a signal is caught.</li>
+</ul>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;unistd.h&gt;
+</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="nf">alarm</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">seconds</span><span class="p">);</span>
+<span class="kt">int</span> <span class="nf">pause</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+</code></pre></div></div>
+<ul>
+  <li>What is the return value?</li>
+</ul>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include&lt;stdio.h&gt;
+#include&lt;unistd.h&gt;
+#include&lt;signal.h&gt;
+</span><span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span>
+    <span class="n">alarm</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+    <span class="n">pause</span><span class="p">();</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="s">"exits </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<ul>
+  <li>result</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Command terminated by signal 14
+</code></pre></div></div>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include&lt;stdio.h&gt;
+#include&lt;unistd.h&gt;
+#include&lt;signal.h&gt;
+</span><span class="kt">void</span> <span class="nf">alarm_handle</span><span class="p">(</span><span class="kt">int</span> <span class="n">signo</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">signo</span><span class="o">==</span><span class="n">SIGALRM</span><span class="p">){</span>
+        <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="s">"caught alarm</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="p">}</span>
+
+<span class="p">}</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">signal</span><span class="p">(</span><span class="n">SIGALRM</span><span class="p">,</span><span class="n">alarm_handle</span><span class="p">)</span><span class="o">==</span><span class="n">SIG_ERR</span><span class="p">){</span>
+        <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="s">"register error</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">alarm</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">alarm</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="s">"ret=%d </span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">ret</span><span class="p">);</span>
+    <span class="n">pause</span><span class="p">();</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="s">"exits </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>result</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ret=2
+caught alarm
+exits
+</code></pre></div></div>
+
+<p>A simple sleep</p>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;signal.h&gt;
+#include &lt;unistd.h&gt;
+</span>
+<span class="kt">void</span> <span class="nf">sig_alrm</span><span class="p">(</span><span class="kt">int</span> <span class="n">signo</span><span class="p">)</span> <span class="p">{</span>
+    <span class="cm">/* nothing to do, just return to wake up the pause */</span>
+<span class="p">}</span>
+
+<span class="kt">unsigned</span> <span class="kt">int</span> <span class="nf">sleep1</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">nsecs</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">signal</span><span class="p">(</span><span class="n">SIGALRM</span><span class="p">,</span> <span class="n">sig_alrm</span><span class="p">)</span> <span class="o">==</span> <span class="n">SIG_ERR</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">nsecs</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">alarm</span><span class="p">(</span><span class="n">nsecs</span><span class="p">);</span>
+    <span class="n">pause</span><span class="p">();</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">alarm</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+    <span class="n">sleep1</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="highlighter-rouge">setjmp()</code> demo</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;stdio.h&gt;
+#include &lt;setjmp.h&gt;
+</span>
+<span class="kt">jmp_buf</span> <span class="n">jump_buffer</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">func</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Before calling longjmp</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="n">longjmp</span><span class="p">(</span><span class="n">jump_buffer</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"After calling longjmp</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">func1</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Before calling func</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="n">func</span><span class="p">();</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"After calling func</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">setjmp</span><span class="p">(</span><span class="n">jump_buffer</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"first calling set_jmp</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+        <span class="n">func1</span><span class="p">();</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"second calling set_jmp</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>result</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>first calling set_jmp
+Before calling func
+Before calling longjmp
+second calling set_jmp
+</code></pre></div></div>
+
+<h3 id="signal-sets">Signal Sets</h3>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;signal.h&gt;
+</span><span class="kt">int</span> <span class="nf">sigemptyset</span><span class="p">(</span><span class="n">sigset_t</span> <span class="o">*</span><span class="n">set</span><span class="p">);</span>
+<span class="kt">int</span> <span class="nf">sigfillset</span><span class="p">(</span><span class="n">sigset_t</span> <span class="o">*</span><span class="n">set</span><span class="p">);</span>
+<span class="kt">int</span> <span class="nf">sigaddset</span><span class="p">(</span><span class="n">sigset_t</span> <span class="o">*</span><span class="n">set</span><span class="p">,</span> <span class="kt">int</span> <span class="n">signo</span><span class="p">);</span>
+<span class="kt">int</span> <span class="nf">sigdelset</span><span class="p">(</span><span class="n">sigset_t</span> <span class="o">*</span><span class="n">set</span><span class="p">,</span> <span class="kt">int</span> <span class="n">signo</span><span class="p">);</span>
+</code></pre></div></div>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">sigismember</span><span class="p">(</span><span class="k">const</span> <span class="n">sigset_t</span> <span class="o">*</span><span class="n">set</span><span class="p">,</span> <span class="kt">int</span> <span class="n">signo</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h3 id="sigprocmask-function">sigprocmask Function</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include &lt;signal.h&gt;
+
+int sigprocmask(int how, const sigset_t *restrict set,           sigset_t *restrict oset);
+</code></pre></div></div>
+
+<ul>
+  <li>Return : 0 if OK , -1 on error</li>
+</ul>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;signal.h&gt;
+#include &lt;unistd.h&gt;
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">sigset_t</span> <span class="o">*</span><span class="n">set</span><span class="p">;</span>
+    <span class="n">sigfillset</span><span class="p">(</span><span class="n">set</span><span class="p">);</span>
+    <span class="n">sigprocmask</span><span class="p">(</span><span class="n">SIG_BLOCK</span><span class="p">,</span> <span class="n">set</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+    <span class="n">pause</span><span class="p">();</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="sigpending-function">sigpending Function</h3>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;signal.h&gt;
+</span>
+<span class="kt">int</span> <span class="nf">sigpending</span><span class="p">(</span><span class="n">sigset_t</span> <span class="o">*</span><span class="n">set</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+  <li>Return : 0 if OK , -1 on error</li>
+</ul>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//</span>
+<span class="c1">// Created by lion on 10/24/16.</span>
+<span class="c1">//</span>
+<span class="cp">#include &lt;signal.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;stdio.h&gt;
+</span><span class="kt">void</span> <span class="nf">sig_quit</span><span class="p">(</span><span class="kt">int</span> <span class="n">signo</span><span class="p">){</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">Caught SIGQUIT</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">signal</span><span class="p">(</span><span class="n">SIGQUIT</span><span class="p">,</span><span class="n">SIG_DFL</span><span class="p">)</span><span class="o">==</span><span class="n">SIG_ERR</span><span class="p">){</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"canz not reset SIGQUIT"</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span>
+
+    <span class="n">sigset_t</span> <span class="n">old_set</span> <span class="p">,</span> <span class="n">new_set</span> <span class="p">,</span> <span class="n">pending_set</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">signal</span><span class="p">(</span><span class="n">SIGQUIT</span><span class="p">,</span><span class="n">sig_quit</span><span class="p">)</span><span class="o">==</span><span class="n">SIG_ERR</span><span class="p">){</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"can not catch SIGQUIT</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">sigemptyset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">new_set</span><span class="p">);</span>
+    <span class="n">sigaddset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">new_set</span><span class="p">,</span><span class="n">SIGQUIT</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">sigprocmask</span><span class="p">(</span><span class="n">SIG_BLOCK</span><span class="p">,</span><span class="o">&amp;</span><span class="n">new_set</span><span class="p">,</span><span class="o">&amp;</span><span class="n">old_set</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">){</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"Block SIGQUIT Error</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">printf</span><span class="p">(</span><span class="s">"first sleep</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">sigpending</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pending_set</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">){</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"SIG pending Error</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">sigprocmask</span><span class="p">(</span><span class="n">SIG_SETMASK</span><span class="p">,</span><span class="o">&amp;</span><span class="n">old_set</span><span class="p">,</span><span class="nb">NULL</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">){</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"reset error</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"second sleep</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>result
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>first sleep
+^\^\^\^\^\^\^\^\^\^\^\^\^\^\^\^\^\^\^\^\^\^\^\^\^\
+Caught SIGQUIT
+second sleep
+^\[1]    6117 quit   
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h3 id="sigaction-function">sigaction Function</h3>
+
+<p>NO FINISH</p>
+
+<p>WAITING</p>
+:ET

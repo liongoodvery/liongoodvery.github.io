@@ -1,0 +1,317 @@
+I"�M<h2 id="file-descriptors">File Descriptors</h2>
+<blockquote>
+  <p>A file descriptor is a non-negative integer. When we open an existing file or create a new file, the kernel returns a file descriptor to the process.</p>
+</blockquote>
+
+<blockquote>
+  <p><code class="highlighter-rouge">STDIN_FILENO</code>, <code class="highlighter-rouge">STDOUT_FILENO</code>, and <code class="highlighter-rouge">STDERR_FILENO</code></p>
+</blockquote>
+
+<h2 id="open-function"><code class="highlighter-rouge">open</code> Function</h2>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;fcntl.h&gt;
+</span>
+<span class="kt">int</span> <span class="nf">open</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">pathname</span><span class="p">,</span> <span class="kt">int</span> <span class="n">oflag</span><span class="p">,</span> <span class="p">...</span> <span class="cm">/* mode_t mode   */</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+  <li>Returns: file descriptor if OK, -1 on error</li>
+  <li>oflag</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">oflag</th>
+      <th style="text-align: left">meaning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">O_RDONLY</td>
+      <td style="text-align: left">Open for reading only.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">O_WRONLY</td>
+      <td style="text-align: left">Open for writing only.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">O_RDWR</td>
+      <td style="text-align: left">Open for reading and writing.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">optional</td>
+      <td style="text-align: left"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">O_APPEND</td>
+      <td style="text-align: left">Append to the end of file on each write.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">O_CREAT</td>
+      <td style="text-align: left">Create the file if it doesn’t exist. This option requires a third argument to the open function, the mode, which specifies the access permission bits of the new file.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">O_EXCL</td>
+      <td style="text-align: left">Generate an error if O_CREAT is also specified and the file already exists.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">O_TRUNC</td>
+      <td style="text-align: left">If the file exists and if it is successfully opened for either write-only or readwrite, truncate its length to 0.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">O_NOCTTY</td>
+      <td style="text-align: left">If the pathname refers to a terminal device, do not allocate the device as the controlling terminal for this process.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">O_NONBLOCK</td>
+      <td style="text-align: left">O_NONBLOCK</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <tbody>
+    <tr>
+      <td>If the pathname refers to a FIFO, a block special file, or a character special file, this option sets the nonblocking mode for both the opening of the file and subsequent I/O.</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>O_DSYNC</td>
+      <td>Have each write wait for physical I/O to complete, but don’t wait for file attributes to be updated if they don’t affect the ability to read the data just written.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>O_RSYNC</td>
+      <td>O_RSYNC</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Have each read operation on the file descriptor wait until any pending writes for the same portion of the file are complete.</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>O_SYNC</td>
+      <td>Have each write wait for physical I/O to complete, including I/O necessary to update file attributes modified as a result of the write.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="creat-function"><code class="highlighter-rouge">creat</code> Function</h2>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;fcntl.h&gt;
+</span>
+<span class="kt">int</span> <span class="nf">creat</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">pathname</span><span class="p">,</span> <span class="n">mode_t</span> <span class="n">mode</span><span class="p">);</span>
+</code></pre></div></div>
+<ul>
+  <li>equivalent to <code class="highlighter-rouge">open (pathname, O_WRONLY | O_CREAT | O_TRUNC, mode);</code></li>
+</ul>
+
+<h2 id="close-function"><code class="highlighter-rouge">close</code> Function</h2>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;unistd.h&gt;
+</span>
+<span class="kt">int</span> <span class="nf">close</span><span class="p">(</span><span class="kt">int</span> <span class="n">filedes</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h2 id="lseek-function"><code class="highlighter-rouge">lseek</code> Function</h2>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;unistd.h&gt;
+</span>
+<span class="kt">off_t</span> <span class="nf">lseek</span><span class="p">(</span><span class="kt">int</span> <span class="n">filedes</span> <span class="p">,</span> <span class="kt">off_t</span> <span class="n">offset</span><span class="p">,</span> <span class="kt">int</span> <span class="n">whence</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+  <li><code class="highlighter-rouge">whence</code> may be one of <code class="highlighter-rouge">SEEK_SET</code>, <code class="highlighter-rouge">SEEK_CUR</code> or <code class="highlighter-rouge">SEEK_END</code></li>
+</ul>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include&lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">lseek</span><span class="p">(</span><span class="n">STDIN_FILENO</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">SEEK_SET</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">){</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"can not seek</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span><span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"can seek</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; ./seekable.out &lt; /dev/seekable.c
+can seek
+&gt; cat seekable.c | ./seekable.out
+can not seek
+</code></pre></div></div>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include&lt;stdio.h&gt;
+#include &lt;apue.h&gt;
+#include &lt;fcntl.h&gt;
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">char</span> <span class="n">buf1</span><span class="p">[]</span> <span class="o">=</span> <span class="s">"abc"</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="n">buf2</span><span class="p">[]</span> <span class="o">=</span> <span class="s">"dfe"</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">fd</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">fd</span> <span class="o">=</span> <span class="n">creat</span><span class="p">(</span><span class="s">"hole.tmp"</span><span class="p">,</span> <span class="n">FILE_MODE</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">err_sys</span><span class="p">(</span><span class="s">"create file error</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">write</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">buf1</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">buf1</span><span class="p">)))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">err_sys</span><span class="p">(</span><span class="s">"write error</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">lseek</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="mi">100000000</span><span class="p">,</span> <span class="n">SEEK_CUR</span><span class="p">))</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">err_sys</span><span class="p">(</span><span class="s">"seek error</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">write</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">buf2</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">buf2</span><span class="p">)))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">err_sys</span><span class="p">(</span><span class="s">"write error</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>A hole in a file isn’t required to have storage backing it on disk</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; ./file_hole.out             
+&gt; dd bs=1 count=100006 if=/dev/zero of=nohole.tmp
+100006+0 records in
+100006+0 records out
+100006 bytes (100 kB) copied, 0.190321 s, 525 kB/s
+&gt; ls -ls
+ 12 -rwxr-xr-x 1 lion lion  10872 Nov 12 13:42 file_hole.out
+  8 -rw-r--r-- 1 lion lion 100006 Nov 12 13:42 hole.tmp
+100 -rw-r--r-- 1 lion lion 100006 Nov 12 13:42 nohole.tmp
+</code></pre></div></div>
+
+<h2 id="read-function"><code class="highlighter-rouge">read</code> Function</h2>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;unistd.h&gt;
+</span>
+<span class="kt">ssize_t</span> <span class="nf">read</span><span class="p">(</span><span class="kt">int</span> <span class="n">filedes</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">nbytes</span><span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
+  <li>Returns nuber of bytes read , 0 if EOF , 1 on error</li>
+</ul>
+
+<h2 id="write-function"><code class="highlighter-rouge">write</code> Function</h2>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;unistd.h&gt;
+</span>
+<span class="kt">ssize_t</span> <span class="nf">write</span><span class="p">(</span><span class="kt">int</span> <span class="n">filedes</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">nbytes</span><span class="p">);</span>
+</code></pre></div></div>
+
+<blockquote>
+  <p>The return value is usually equal to the nbytes argument; otherwise, an error has occurred.</p>
+</blockquote>
+
+<h2 id="io-efficiency">IO Efficiency</h2>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include&lt;stdio.h&gt;
+#include &lt;apue.h&gt;
+#include &lt;stdlib.h&gt;
+</span>
+<span class="kt">int</span> <span class="nf">copy</span><span class="p">(</span><span class="kt">int</span> <span class="n">bufsize</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">n</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="n">bufsize</span><span class="p">];</span>
+
+    <span class="k">while</span> <span class="p">((</span><span class="n">n</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">STDIN_FILENO</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">bufsize</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">!=</span> <span class="n">write</span><span class="p">(</span><span class="n">STDOUT_FILENO</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">err_sys</span><span class="p">(</span><span class="s">"write error</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">err_sys</span><span class="p">(</span><span class="s">"read error</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">err_sys</span><span class="p">(</span><span class="s">"usage copy.out bufsize</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="kt">int</span> <span class="n">bufsize</span> <span class="o">=</span> <span class="n">atoi</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+    <span class="n">copy</span><span class="p">(</span><span class="n">bufsize</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="file-sharing">File Sharing</h2>
+
+<h2><img src="../assets/Kernel_data_structures_for_open_files.png" alt="Kernel data structures for open files" /></h2>
+<p><img src="../assets/Two_independent_processes_with_the_same_file_open.png" alt="Two independent processes with the same file open" /></p>
+
+<h2 id="atomic-operation">Atomic Operation</h2>
+
+<h3 id="appending-to-a-file">Appending to a File</h3>
+
+<h3 id="pread-and-pwrite-functions"><code class="highlighter-rouge">pread</code> and <code class="highlighter-rouge">pwrite</code> Functions</h3>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;unistd.h&gt;
+</span>
+<span class="kt">ssize_t</span> <span class="nf">pread</span><span class="p">(</span><span class="kt">int</span> <span class="n">filedes</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">nbytes</span><span class="p">,</span> <span class="kt">off_t</span> <span class="n">offset</span><span class="p">);</span>
+<span class="kt">ssize_t</span> <span class="nf">pwrite</span><span class="p">(</span><span class="kt">int</span> <span class="n">fileses</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">nbytes</span><span class="p">,</span> <span class="kt">off_t</span> <span class="n">offset</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h3 id="creating-a-file">Creating a File</h3>
+
+<h2 id="dup-and-dup2-functions"><code class="highlighter-rouge">dup</code> and <code class="highlighter-rouge">dup2</code> Functions</h2>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;unistd.h&gt;
+</span>
+<span class="kt">int</span> <span class="nf">dup</span><span class="p">(</span><span class="kt">int</span> <span class="n">filedes</span><span class="p">);</span>
+<span class="kt">int</span> <span class="nf">dup2</span><span class="p">(</span><span class="kt">int</span> <span class="n">filedes</span><span class="p">,</span> <span class="kt">int</span> <span class="n">filedes2</span><span class="p">);</span>
+</code></pre></div></div>
+
+<blockquote>
+  <p>The new file descriptor returned by dup is guaranteed to be the lowest-numbered available file descriptor.
+With <code class="highlighter-rouge">dup2</code>, we specify the value of the new descriptor with the <code class="highlighter-rouge">filedes2</code> argument.
+If <code class="highlighter-rouge">filedes2</code> is already open, it is first closed. If <code class="highlighter-rouge">filedes</code> equals <code class="highlighter-rouge">filedes2</code>, then <code class="highlighter-rouge">dup2</code> returns <code class="highlighter-rouge">filedes2</code> without closing it.</p>
+</blockquote>
+
+<p><img src="../assets/dup.png" alt="Kernel data structures after dup(1)" /></p>
+
+<p><code class="highlighter-rouge"> dup2(filedes, filedes2);</code> is equivalent to</p>
+
+<ul>
+  <li>dup example
+```c
+#include <apue.h>
+#include <unistd.h>
+#include <fcntl.h></fcntl.h></unistd.h></apue.h></li>
+</ul>
+
+<p>int main() {
+    int fd;
+    if ((fd = dup(STDOUT_FILENO)) == -1)
+        err_sys(“dup failed”);
+    printf(“fd=%d\n”, fd);
+    if (write(fd, “aaa\n”, 4) != 4)
+        err_sys(“write failed”);
+    exit(0);
+}</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+ 
+
+</code></pre></div></div>
+<p>fd=3
+aaa</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- dup2 return value
+
+
+```c
+close(filedes2);
+fcntl(filedes, F_DUPFD, filedes2);
+</code></pre></div></div>
+:ET
