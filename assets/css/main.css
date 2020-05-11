@@ -667,7 +667,7 @@ html, body {
 
 @media only screen and (min-width: 37.5rem) {
     .bar-header .logo a:after {
-        content: '</> Android Developer'
+        content: '</> Java Developer'
     }
 }
 

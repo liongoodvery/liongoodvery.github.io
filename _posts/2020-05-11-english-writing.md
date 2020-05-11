@@ -8,8 +8,8 @@ categories:
 - Exam
 tags:
 - English
-main-class: 'java'
-color: '#F31917'
+main-class: 'english'
+color: '#3A9BDB'
 introduction: 'English Writing'
 ---
 
